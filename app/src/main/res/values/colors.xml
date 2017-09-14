@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- default -->
+    <color name="default_light_grey_color">#929292</color>
+    <color name="default_blue_color">#01aff4</color>
+    <color name="default_black_color">#000000</color>
+    <color name="default_title_color">#343434</color>
+    <color name="default_fragment_bk_color">#f2f2f2</color>
+    <color name="default_fragment_title_bk_color">#f4f5f7</color>
+    <color name="default_fragment_search_bk_color">#e3e4e6</color>
+    <color name="default_value_color">#333333</color>
+    <color name="contact_name_color">#222222</color>
+    <color name="contact_realname_color">#aaaaaa</color>
+    <color name="default_key_color">#999999</color>
+    <color name="default_line_color">#cccccc</color>
+
+    <!-- login -->
+    <color name="default_bk">#ffffff</color>
+    <color name="half_transparent_dark">#e0000000</color>
+    <color name="half_transparent_light">#AA000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="login_hint_color">#d4d4d4</color>
+
+</resources>
