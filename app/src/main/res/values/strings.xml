@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_name">用户名</string>
+    <string name="prompt_name">用户名或手机号</string>
     <string name="prompt_password">密码</string>
     <string name="action_sign_in_register"><b>登 录</b></string>
     <string name="action_sign_in_short">进入</string>
@@ -15,12 +15,14 @@
     <string name="error_name_required">请输入用户名</string>
     <string name="error_pwd_required">请输入密码</string>
     <string name="invalid_account">登录失败,请重试</string>
+    <string name="internal_error">服务器内部错误，请联系管理员</string>
+    <string name="unknown_error">位置错误，请联系开发者</string>
     <string name="invalid_network">请检查网络是否正常！</string>
     <string name="login_timeout">登陆超时,请重试</string>
     <string name="login_failed">登陆失败,请重试</string>
     <string name="action_kickout">用户在其他客户端登录</string>
-    <string name="switch_login_server">切换登陆服务器</string>
-    <string name="switch_login_server_title">输入登陆服务器地址</string>
+    <string name="quick_register">快速注册</string>
+    <string name="quick_register_title">使用手机号或邮箱快速注册</string>
 
 
 </resources>

@@ -1,6 +1,6 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MGIMInitAct">
+    tools:context=".ui.LoginActivity">
 
     <!-- Login form -->
 
@@ -28,7 +28,7 @@
             android:id="@+id/login_page"
             style="@style/LoginFormContainer"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:visibility="invisible">
@@ -37,8 +37,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="80dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="35dp"
                 android:src="@drawable/login_logo" />
 
             <LinearLayout
@@ -99,7 +99,7 @@
                 </RelativeLayout>
 
                 <Button
-                    android:id="@+id/sign_in_button"
+                    android:id="@+id/login_button"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
-                    android:text="@string/switch_login_server"
+                    android:text="@string/quick_register"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     />
