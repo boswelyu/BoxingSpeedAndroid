@@ -1,4 +1,4 @@
-package com.tealcode.boxingspeed.ui;
+package com.tealcode.boxingspeed.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;

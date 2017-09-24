@@ -1,6 +1,6 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.LoginActivity">
+    tools:context=".ui.activity.LoginActivity">
 
     <!-- Login form -->
 
@@ -26,7 +26,7 @@
 
         <LinearLayout
             android:id="@+id/login_page"
-            style="@style/LoginFormContainer"
+            style="@style/FillWidthContainer"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -110,12 +110,22 @@
                     android:textSize="21sp" />
 
                 <TextView
-                    android:id="@+id/sign_switch_login_server"
+                    android:id="@+id/quick_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
                     android:text="@string/quick_register"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    />
+                <TextView
+                    android:id="@+id/phone_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/phone_login"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     />

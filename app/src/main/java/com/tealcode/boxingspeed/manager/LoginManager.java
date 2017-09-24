@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.tealcode.boxingspeed.config.AppConfig;
+import com.tealcode.boxingspeed.handler.IRegisterReplyHandler;
 import com.tealcode.boxingspeed.message.LoginReply;
 import com.tealcode.boxingspeed.message.LoginRequest;
 import com.tealcode.boxingspeed.message.SocketEvent;
@@ -34,11 +35,16 @@ public class LoginManager {
     }
 
     private ILoginReplyHandler mLoginReplyHander;
-    private AsyncTask<Void, Void, Void> loginTask = null;
+    private IRegisterReplyHandler mRegisterReplyHandler;
+    private AsyncTask<Void, Void, LoginReply> loginTask = null;
 
-    public void registerHandler(ILoginReplyHandler handler)
+    public void setRegisterHandler(IRegisterReplyHandler handler)
     {
-        this.mLoginReplyHander = handler;
+        this.mRegisterReplyHandler = handler;
+    }
+
+    public void setLoginHandler(ILoginReplyHandler loginHandler) {
+        this.mLoginReplyHander = loginHandler;
     }
 
     public void login(final String username, final String password)
@@ -47,11 +53,12 @@ public class LoginManager {
             loginTask.cancel(true);
         }
 
-        loginTask = new AsyncTask<Void, Void, Void>() {
+        loginTask = new AsyncTask<Void, Void, LoginReply>() {
 
             @Override
-            protected Void doInBackground(Void... params) {
+            protected LoginReply doInBackground(Void... params) {
                 URL url = null;
+                LoginReply loginReply = null;
                 try {
                     url = new URL(AppConfig.LoginServer);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -78,7 +85,7 @@ public class LoginManager {
                     bos.close();
 
                     String loginResult = bos.toString("utf-8");
-                    HandleLoginResult(loginResult);
+                    loginReply = HandleLoginResult(loginResult);
 
                 }catch(MalformedURLException urle) {
                     Log.e(TAG, "LoginURL Malformed");
@@ -87,9 +94,16 @@ public class LoginManager {
                     HandleLoginSocketError(SocketEvent.ADDRESS_CONNECT_FAILED);
                 }
 
-                return null;
+                return loginReply;
             }
 
+            @Override
+            protected void onPostExecute(LoginReply reply) {
+                // Update upper UI logic
+                if(mLoginReplyHander != null) {
+                    mLoginReplyHander.onLoginReply(reply);
+                }
+            }
 
         }.execute();
 
@@ -102,23 +116,23 @@ public class LoginManager {
         request.setUsername(username);
         request.setPassword(password);
 
-        return JSON.toJSONString(request);
+        String ret = JSON.toJSONString(request);
+        Log.d(TAG, ret);
+
+        return ret;
     }
 
     // 解析登录请求返回
-    private void HandleLoginResult(String loginResponse)
+    private LoginReply HandleLoginResult(String loginResponse)
     {
-        if(mLoginReplyHander == null) {
-            Log.e(TAG, "LoginReplyHandler not registered yet, got login reply: " + loginResponse);
-            return;
-        }
+
         LoginReply reply = JSON.parseObject(loginResponse, LoginReply.class);
 
         if(reply != null && reply.getStatus().equals("OK")) {
             SaveLoginReplyData(reply);
         }
 
-        mLoginReplyHander.onLoginReply(reply);
+        return reply;
     }
 
     private void HandleLoginSocketError(SocketEvent event)

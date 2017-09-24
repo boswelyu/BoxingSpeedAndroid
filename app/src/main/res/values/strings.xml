@@ -5,7 +5,12 @@
     <!-- Strings related to login -->
     <string name="prompt_name">用户名或手机号</string>
     <string name="prompt_password">密码</string>
+    <string name="prompt_phone_num">手机号</string>
+    <string name="prompt_email_username">邮箱或用户名</string>
+    <string name="prompt_confirm_password">再次确认密码</string>
+    <string name="prompt_passcode">输入收到的验证码</string>
     <string name="action_sign_in_register"><b>登 录</b></string>
+    <string name="action_register"><b>注 册</b></string>
     <string name="action_sign_in_short">进入</string>
     <string name="action_forgot_password">Recover lost password</string>
     <string name="login_progress_signing_in">正在登录&#8230;</string>
@@ -21,8 +26,14 @@
     <string name="login_timeout">登陆超时,请重试</string>
     <string name="login_failed">登陆失败,请重试</string>
     <string name="action_kickout">用户在其他客户端登录</string>
-    <string name="quick_register">快速注册</string>
-    <string name="quick_register_title">使用手机号或邮箱快速注册</string>
+    <string name="quick_register">邮箱注册</string>
+    <string name="quick_register_title">使用邮箱快速注册</string>
+    <string name="phone_login">手机登录</string>
+    <string name="send_register_code">发送验证码</string>
+    <string name="phone_login_title">使用手机号快速创建账号</string>
+
+    <string name="start_boxing">开始测试</string>
+
 
 
 </resources>

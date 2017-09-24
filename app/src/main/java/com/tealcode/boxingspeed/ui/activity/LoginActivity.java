@@ -1,4 +1,4 @@
-package com.tealcode.boxingspeed.ui;
+package com.tealcode.boxingspeed.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tealcode.boxingspeed.R;
-import com.tealcode.boxingspeed.message.LoginEvent;
+import com.tealcode.boxingspeed.message.LoginReply;
 import com.tealcode.boxingspeed.message.SocketEvent;
 import com.tealcode.boxingspeed.handler.ILoginReplyHandler;
 import com.tealcode.boxingspeed.helper.AppConstant;
@@ -37,6 +37,8 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
 
     private EditText mUsernameText;
     private EditText mPasswordText;
+    private TextView mQuickRegisterText;
+    private TextView mPhoneLoginText;
     private InputMethodManager inputManager;
 
     @Override
@@ -46,7 +48,7 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
         inputManager = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
         setContentView(R.layout.activity_login);
 
-        LoginManager.getInstance().registerHandler(this);
+        LoginManager.getInstance().setLoginHandler(this);
 
         initViewLayout();
 
@@ -103,6 +105,26 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
                 return false;
             }
         });
+
+        mQuickRegisterText = (TextView)findViewById(R.id.quick_register);
+        mQuickRegisterText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                intent.putExtra(AppConstant.KEY_REGISTER_TYPE, AppConstant.VALUE_EMAIL_REG);
+                startActivity(intent);
+            }
+        });
+
+        mPhoneLoginText = (TextView)findViewById(R.id.phone_register);
+        mPhoneLoginText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                intent.putExtra(AppConstant.KEY_REGISTER_TYPE, AppConstant.VALUE_PHONE_REG);
+                startActivity(intent);
+            }
+        });
     }
 
     private void hideSoftInput()
@@ -120,6 +142,7 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
     {
         splashPage.setVisibility(View.VISIBLE);
         loginPage.setVisibility(View.INVISIBLE);
+        statusPage.setVisibility(View.INVISIBLE);
 
         Animation splashAnim = AnimationUtils.loadAnimation(this, R.anim.login_splash);
         if(splashAnim != null) {
@@ -134,6 +157,7 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
     private void showLoginPage() {
         splashPage.setVisibility(View.GONE);
         loginPage.setVisibility(View.VISIBLE);
+        statusPage.setVisibility(View.GONE);
     }
 
     private void startAutoLogin()
@@ -220,42 +244,22 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
         }
     }
 
-    // 登录成功，切换到应用主页面
-    private void onLoginSuccess()
-    {
-
-    }
-
-    private void onLoginFailed(LoginEvent event)
-    {
-        switch(event) {
-            case LOGIN_AUTH_FAILED:
-                Toast.makeText(this, getString(R.string.error_incorrect_user), Toast.LENGTH_SHORT).show();
-                break;
-            case LOGIN_INNER_ERROR:
-                Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Toast.makeText(this, getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
-                break;
-        }
-
-    }
 
     // Implement ILoginReplyHandler callback functions
     @Override
-    public void onLoginReply(LoginEvent event) {
-        switch(event)
-        {
-            case LOGIN_SUCCESS:
-                onLoginSuccess();
-                break;
-            case LOGIN_AUTH_FAILED:
-            case LOGIN_INNER_ERROR:
-                onLoginFailed(event);
-                break;
-            default:
-                Log.e(TAG, "Invalid LoginReply Status");
+    public void onLoginReply(LoginReply reply) {
+        if(reply == null) {
+            Toast.makeText(this, "Invalid login reply", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String message = reply.getStatus();
+        if(message.equals(AppConstant.STATUS_OK)) {
+            // Login Success, Switch to MainActivity
+            onLoginSuccess();
+        }
+        else {
+            onLoginFailure(message);
         }
     }
 
@@ -268,5 +272,19 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
             default:
                 Log.e(TAG, "Unknown socket event");
         }
+    }
+
+    private void onLoginSuccess()
+    {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        LoginActivity.this.finish();
+    }
+
+    private void onLoginFailure(String error)
+    {
+        showLoginPage();
+
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 }
