@@ -34,6 +34,11 @@
 
     <string name="start_boxing">开始测试</string>
 
-
+    <!-- 主界面 -->
+    <string name="main_boxing">测验</string>
+    <string name="main_friends">好友</string>
+    <string name="main_arena">对战</string>
+    <string name="main_ranking">排行榜</string>
+    <string name="main_profiler">我的</string>
 
 </resources>

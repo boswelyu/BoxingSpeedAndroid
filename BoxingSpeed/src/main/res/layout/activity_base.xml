@@ -11,7 +11,7 @@
         android:id="@+id/topbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_default_height"
-        android:background="@drawable/top_default_bk" >
+        android:background="@drawable/top_default_bg" >
 
         <ImageView
             android:id="@+id/left_btn"

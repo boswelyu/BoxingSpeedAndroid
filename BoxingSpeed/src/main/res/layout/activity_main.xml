@@ -4,49 +4,47 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <fragment
-        android:id="@+id/fragment_chat"
+    <FrameLayout android:id="@+id/main_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        class="com.tealcode.boxingspeed.ui.fragment.BoxingFragment" />
-
-    <fragment
-        android:id="@+id/fragment_myinfo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        class="com.tealcode.boxingspeed.ui.fragment.MyInfoFragment" />
+        android:layout_height="60dp"
+        android:layout_weight="1">
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/tab_bk"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingLeft="15dp"
         android:paddingRight="15dp">
 
-        <com.mogujie.tt.ui.widget.NaviTabButton
-            android:id="@+id/tabbutton_chat"
+        <com.tealcode.boxingspeed.ui.widget.NaviTabButton
+            android:id="@+id/tabbutton_boxing"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
 
-        <com.mogujie.tt.ui.widget.NaviTabButton
-            android:id="@+id/tabbutton_contact"
+        <com.tealcode.boxingspeed.ui.widget.NaviTabButton
+            android:id="@+id/tabbutton_friends"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
 
-        <com.mogujie.tt.ui.widget.NaviTabButton
-            android:id="@+id/tabbutton_internal"
+        <com.tealcode.boxingspeed.ui.widget.NaviTabButton
+            android:id="@+id/tabbutton_ranking"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
 
-        <com.mogujie.tt.ui.widget.NaviTabButton
-            android:id="@+id/tabbutton_my"
+        <com.tealcode.boxingspeed.ui.widget.NaviTabButton
+            android:id="@+id/tabbutton_arena"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" />
+
+        <com.tealcode.boxingspeed.ui.widget.NaviTabButton
+            android:id="@+id/tabbutton_profiler"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
