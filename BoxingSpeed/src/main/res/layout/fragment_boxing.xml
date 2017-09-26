@@ -3,9 +3,28 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <Button
         android:id="@+id/start_boxing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/start_boxing" />
+        android:background="@drawable/start" />
+
+
+    <TextView android:id="@+id/boxing_count_text"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/message_text_bg"
+        android:text="@string/boxing_time"
+        android:gravity="center"/>
+
+
+    <TextView android:id="@+id/boxing_time_text"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/message_text_bg"
+        android:text="@string/boxing_count"
+        android:gravity="center">
+    </TextView>
+
 </LinearLayout>

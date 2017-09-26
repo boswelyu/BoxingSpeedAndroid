@@ -41,4 +41,8 @@
     <string name="main_ranking">排行榜</string>
     <string name="main_profiler">我的</string>
 
+    <!-- 测试界面 -->
+    <string name="boxing_time">记录时间</string>
+    <string name="boxing_count">出拳次数</string>
+
 </resources>
