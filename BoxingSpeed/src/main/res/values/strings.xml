@@ -45,4 +45,8 @@
     <string name="boxing_time">记录时间</string>
     <string name="boxing_count">出拳次数</string>
 
+    <!-- 个人信息界面 -->
+    <string name="notify_setting">通知设置</string>
+    <string name="logout">退出登录</string>
+
 </resources>
