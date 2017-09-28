@@ -4,7 +4,7 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
-        android:id="@+id/content"
+        android:id="@+id/personal_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/default_bk"
@@ -65,9 +65,15 @@
                 android:src="@drawable/default_arrow" />
         </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/divide_line"
+            />
 
         <RelativeLayout
-            android:id="@+id/settingPage"
+            android:id="@+id/setting_view"
             android:layout_width="match_parent"
             android:layout_height="45dp" >
 
@@ -91,15 +97,8 @@
 
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/divide_line"
-            />
-
         <RelativeLayout
-            android:id="@+id/clearPage"
+            android:id="@+id/clear_cache_view"
             android:layout_width="match_parent"
             android:layout_height="45dp" >
 
@@ -110,7 +109,7 @@
                 android:layout_marginLeft="20dp"
                 android:textColor="@android:color/black"
                 android:textSize="15sp"
-                android:text="@string/logout" />
+                android:text="@string/clear_cache" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -130,8 +129,9 @@
             android:background="@drawable/divide_line"
             />
 
+        <!-- 退出登录 -->
         <RelativeLayout
-            android:id="@+id/exitPage"
+            android:id="@+id/logout_view"
             android:layout_width="match_parent"
             android:layout_height="45dp">
 
@@ -161,6 +161,7 @@
             android:layout_marginLeft="10dp"
             android:background="@drawable/divide_line"
             />
+
     </LinearLayout>
 
     <ProgressBar

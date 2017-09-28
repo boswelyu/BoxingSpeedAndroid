@@ -7,6 +7,7 @@ import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tealcode.boxingspeed.R;
@@ -20,6 +21,8 @@ public class BaseFragment extends Fragment {
     protected ViewGroup topContentView;
     protected TextView  topTitleText;
 
+    protected ProgressBar progressBar;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +30,19 @@ public class BaseFragment extends Fragment {
         topContentView = (ViewGroup) LayoutInflater.from(getActivity()).inflate(R.layout.fragment_base, null);
         topTitleText = (TextView) topContentView.findViewById(R.id.base_fragment_title);
         topTitleText.setVisibility(View.VISIBLE);
+    }
+
+    public void Init(View currView) {
+        progressBar = (ProgressBar)currView.findViewById(R.id.progress_bar);
+    }
+
+    public void ShowProgressBar(boolean flag) {
+        if(progressBar == null) { return; }
+        if(flag) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     protected void setTopTitleBold(String title) {
@@ -45,7 +61,7 @@ public class BaseFragment extends Fragment {
 
     }
 
-    protected void setTopTitle(String title) {
+    protected void SetTopTitle(String title) {
         if (title == null) {
             return;
         }

@@ -106,8 +106,11 @@ public class LoginManager {
             }
 
         }.execute();
+    }
 
-
+    public void logout()
+    {
+        // TODO: 清理本地存储的用户名和密码，切换到登录界面，并且设置切换参数为不自动登录
     }
 
     private String BuildLoginPostStr(String username, String password)

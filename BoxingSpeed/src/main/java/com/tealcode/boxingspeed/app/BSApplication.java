@@ -1,8 +1,10 @@
 package com.tealcode.boxingspeed.app;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
+import com.tealcode.boxingspeed.helper.HttpImageLoader;
 import com.tealcode.boxingspeed.helper.LocalStorage;
 
 /**
@@ -16,7 +18,8 @@ public class BSApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d("BSApplication", "BSApplication onCreate");
-
-        LocalStorage.init(getApplicationContext());
+        Context appContext = getApplicationContext();
+        LocalStorage.init(appContext);
+        HttpImageLoader.InitConfig(appContext);
     }
 }
