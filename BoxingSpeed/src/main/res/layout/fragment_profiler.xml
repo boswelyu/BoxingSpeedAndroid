@@ -39,17 +39,17 @@
                 >
 
                 <TextView
-                    android:id="@+id/nickName"
+                    android:id="@+id/nickname_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="17sp"/>
 
                 <TextView
-                    android:id="@+id/userName"
+                    android:id="@+id/username_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/nickName"
+                    android:layout_below="@id/nickname_text"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/default_light_grey_color"
                     android:textSize="14sp"

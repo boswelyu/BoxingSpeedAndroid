@@ -15,6 +15,33 @@
         android:layout_gravity="center"
         android:gravity="center" >
 
+        <!-- 左侧的按钮 -->
+        <RelativeLayout
+            android:id="@+id/top_left_container"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical|left" >
+
+            <ImageView
+                android:id="@+id/top_left_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="6dp"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/top_left_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_toRightOf="@id/top_left_image"
+                android:gravity="center_vertical"
+                android:textColor="@color/default_title_color"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <!-- 居中的标题栏 -->
         <TextView
             android:id="@+id/base_fragment_title"
             android:layout_width="match_parent"
@@ -25,6 +52,32 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/top_title_size"
             android:textStyle="bold" />
+
+        <!-- 右侧的按钮 -->
+        <RelativeLayout
+            android:id="@+id/top_right_container"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical|right" >
+
+            <ImageView
+                android:id="@+id/top_right_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="6dp"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/top_right_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_toRightOf="@id/top_right_image"
+                android:gravity="center_vertical"
+                android:textColor="@color/default_title_color"
+                android:textSize="14sp" />
+        </RelativeLayout>
 
     </FrameLayout>
 

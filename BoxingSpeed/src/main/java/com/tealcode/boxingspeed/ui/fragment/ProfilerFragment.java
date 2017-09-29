@@ -2,7 +2,6 @@ package com.tealcode.boxingspeed.ui.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -11,10 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tealcode.boxingspeed.R;
+import com.tealcode.boxingspeed.helper.HttpImageLoader;
+import com.tealcode.boxingspeed.helper.entity.UserEntity;
 import com.tealcode.boxingspeed.manager.LoginManager;
+import com.tealcode.boxingspeed.manager.ProfilerManager;
+import com.tealcode.boxingspeed.ui.widget.BaseImageView;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by Boswell Yu on 2017/9/24.
@@ -52,12 +58,14 @@ public class ProfilerFragment extends BaseFragment {
     {
         super.Init(currFragment);
         personalView = currFragment.findViewById(R.id.personal_view);
-
         settingView = currFragment.findViewById(R.id.setting_view);
         clearCacheView = currFragment.findViewById(R.id.clear_cache_view);
         logoutView = currFragment.findViewById(R.id.logout_view);
 
-        // 设置界面
+        // 基本信息界面
+        initPersonalView();
+
+        // 注册设置界面响应函数
         settingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +78,23 @@ public class ProfilerFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 // 提示确定清理本地图片缓存
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(getString(R.string.confirm_clear_cache));
+                builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Clear Image Cache
+                        HttpImageLoader.ClearCache();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
 
@@ -77,17 +102,9 @@ public class ProfilerFragment extends BaseFragment {
         logoutView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder =new
-                        AlertDialog.Builder(new android.view.ContextThemeWrapper(getActivity(),
-                                android.R.style.Theme_Holo_Light_Dialog));
-                LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View dialogView = inflater.inflate(R.layout.popup_dialog, null);
-                final EditText contentText = (EditText) dialogView.findViewById(R.id.dialog_content);
-                contentText.setVisibility(View.GONE);
+                AlertDialog.Builder builder =new AlertDialog.Builder(getActivity());
 
-                TextView titleText = (TextView) dialogView.findViewById(R.id.dialog_title);
-                titleText.setText(R.string.confirm_logout_tip);
-                builder.setView(dialogView);
+                builder.setTitle(getString(R.string.confirm_logout_tip));
                 builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -103,6 +120,40 @@ public class ProfilerFragment extends BaseFragment {
                     }
                 });
                 builder.show();
+            }
+        });
+
+    }
+
+    private void initPersonalView()
+    {
+        UserEntity userEntity = ProfilerManager.getInstance().getUserEntity();
+        if(userEntity == null) {
+            userEntity = new UserEntity();
+            userEntity.setNickname("nickname");
+            userEntity.setUsername("username");
+            userEntity.setUserId(0);
+        }
+
+        TextView nicknameView = (TextView) personalView.findViewById(R.id.nickname_text);
+        TextView usernameView = (TextView) personalView.findViewById(R.id.username_text);
+        BaseImageView portraitImageView = (BaseImageView) personalView.findViewById(R.id.user_portrait);
+
+        nicknameView.setText(userEntity.getNickname());
+        usernameView.setText(userEntity.getUsername());
+
+        String avatarurl = userEntity.getAvatarUrl();
+        if(avatarurl == null || avatarurl.isEmpty()) {
+            portraitImageView.setImageResource(R.drawable.default_user_portrait);
+        } else {
+            portraitImageView.LoadImageFromUrl(avatarurl);
+        }
+
+        RelativeLayout container = (RelativeLayout) personalView.findViewById(R.id.user_container);
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Open Profiler Activity
             }
         });
 

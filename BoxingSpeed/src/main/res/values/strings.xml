@@ -41,6 +41,9 @@
     <string name="main_ranking">排行榜</string>
     <string name="main_profiler">我的</string>
 
+    <!-- 通用顶部导航条 -->
+    <string name="top_left_back">返回</string>
+
     <!-- 测试界面 -->
     <string name="boxing_time">记录时间</string>
     <string name="boxing_count">出拳次数</string>
@@ -50,6 +53,9 @@
     <string name="clear_cache">清理图片缓存</string>
     <string name="logout">退出登录</string>
     <string name="confirm_logout_tip">确定退出登录?</string>
+    <string name="confirm_clear_cache">确定清理本地图片缓存？</string>
+    <string name="detail_user_info">详细资料</string>
+
 
     <!-- 通用弹出对话框 -->
     <string name="confirm">确定</string>
