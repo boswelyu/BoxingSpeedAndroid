@@ -2,6 +2,7 @@ package com.tealcode.boxingspeed.ui.widget;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -77,11 +78,9 @@ public class NaviTabButton extends FrameLayout {
 
     private void setSelectedColor(Boolean selected) {
         if (selected) {
-            mTitle.setTextColor(getResources().getColor(
-                    R.color.default_blue_color));
+            mTitle.setTextColor(ContextCompat.getColor(getContext(), R.color.default_blue_color));
         } else {
-            mTitle.setTextColor(getResources().getColor(
-                    R.color.default_light_grey_color));
+            mTitle.setTextColor(ContextCompat.getColor(getContext(), R.color.default_light_grey_color));
         }
     }
 
