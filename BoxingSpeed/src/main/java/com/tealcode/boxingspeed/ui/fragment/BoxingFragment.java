@@ -15,9 +15,11 @@ import android.widget.Toast;
 import com.tealcode.boxingspeed.R;
 import com.tealcode.boxingspeed.config.AppConfig;
 import com.tealcode.boxingspeed.helper.AppConstant;
+import com.tealcode.boxingspeed.helper.packer.ProtobufPacker;
+import com.tealcode.boxingspeed.manager.NetworkManager;
 import com.tealcode.boxingspeed.meter.IMeterReportListener;
 import com.tealcode.boxingspeed.meter.MovementMeter;
-import com.tealcode.boxingspeed.protobuf.request;
+import com.tealcode.boxingspeed.protobuf.Client;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -99,22 +101,25 @@ public class BoxingFragment extends BaseFragment implements IMeterReportListener
 //            Log.e(TAG, "MovementMeter is NULL");
 //        }
         // Test protobuf message functions
-        request.Person.Builder pb = request.Person.newBuilder();
-        pb.setEmail("yubo112002@163.com");
-        pb.setId(1000001);
-        pb.setName("Thomas");
-        request.Person person = pb.build();
+        Client.ClientMsg.Builder clientBuilder = Client.ClientMsg.newBuilder();
+        Client.Login.Builder loginBuilder = Client.Login.newBuilder();
+        loginBuilder.setDeviceId("abcdefgh");
+        clientBuilder.setLogin(loginBuilder.build());
 
-        AsyncTask<request.Person, String, Void> sendTask = new AsyncTask<request.Person, String, Void>() {
+        Client.ClientMsg clientMsg = clientBuilder.build();
+
+        AsyncTask<Client.ClientMsg, String, Void> sendTask = new AsyncTask<Client.ClientMsg, String, Void>() {
             @Override
-            protected Void doInBackground(request.Person... params) {
+            protected Void doInBackground(Client.ClientMsg... params) {
                 try{
                     Socket socket = new Socket(AppConfig.SocketServerIp, AppConfig.SocketServerPort);
 
                     OutputStream os = socket.getOutputStream();
 
-                    request.Person person = params[0];
-                    person.writeTo(os);
+                    Client.ClientMsg clientMsg = params[0];
+                    byte[] msgbytes = clientMsg.toByteArray();
+                    byte[] packbytes = ProtobufPacker.encodeMessage(msgbytes, 1000001, true);
+                    os.write(packbytes);
 
                     publishProgress("success");
 
@@ -132,7 +137,7 @@ public class BoxingFragment extends BaseFragment implements IMeterReportListener
                 String info = values[0];
                 Toast.makeText(getContext(), info, Toast.LENGTH_SHORT).show();
             }
-        }.execute(person);
+        }.execute(clientMsg);
 
 
 //        person.writeTo(outputStream);
