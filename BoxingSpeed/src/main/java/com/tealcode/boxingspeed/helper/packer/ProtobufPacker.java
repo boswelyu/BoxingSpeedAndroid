@@ -2,6 +2,7 @@ package com.tealcode.boxingspeed.helper.packer;
 
 import android.util.Log;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.tealcode.boxingspeed.helper.GateKeeper;
 import com.tealcode.boxingspeed.protobuf.Client;
 import com.tealcode.boxingspeed.protobuf.Server;
@@ -60,9 +61,43 @@ public class ProtobufPacker {
         return packdata;
     }
 
-    public static Server.ServerMsg decodeMessage(byte[] buffer, int offset)
+
+    /*  Buffer format:
+    *      4          ...
+    *  ErrorCode | Proto Data
+    */
+    public static DecodeResult decodeMessage(byte[] buffer, int offset, int length)
     {
+        int ecode = XMessage.UNPACK_INT(buffer, offset);
+        offset += XMessage.XSIZE_OF(ecode);
+
+        if(ecode == 0) {
+            try {
+                Server.ServerMsg serverMsg = Server.ServerMsg.parseFrom(XMessage.UNAPCK_BYTES(buffer, offset, length));
+                return new DecodeResult(ecode, serverMsg);
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            return new DecodeResult(ecode);
+        }
 
         return null;
+    }
+
+    public static class DecodeResult {
+        public int errorCode;
+        public Server.ServerMsg serverMsg;
+
+        public DecodeResult(int ecode)
+        {
+            this.errorCode = ecode;
+        }
+
+        public DecodeResult(int ecode, Server.ServerMsg msg) {
+            this.errorCode = ecode;
+            this.serverMsg = msg;
+        }
     }
 }

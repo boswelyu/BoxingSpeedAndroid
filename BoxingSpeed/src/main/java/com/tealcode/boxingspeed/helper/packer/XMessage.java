@@ -4,8 +4,8 @@ package com.tealcode.boxingspeed.helper.packer;
  * Created by Boswell Yu on 2017/10/2.
  * 所有发往服务器的消息的包装消息
  * 固定的消息头：
- *   4         2        2           4        4
- * Length | Version | Head Len | Command | UserId | Real Data
+ *    1        1          2          4            4        4
+ * Version | Encrypt | Head Len | Packet Len | Command | UserId | Real Data
  */
 
 
