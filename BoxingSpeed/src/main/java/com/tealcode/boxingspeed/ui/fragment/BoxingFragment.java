@@ -106,39 +106,7 @@ public class BoxingFragment extends BaseFragment implements IMeterReportListener
         loginBuilder.setDeviceId("abcdefgh");
         clientBuilder.setLogin(loginBuilder.build());
 
-        Client.ClientMsg clientMsg = clientBuilder.build();
-
-        AsyncTask<Client.ClientMsg, String, Void> sendTask = new AsyncTask<Client.ClientMsg, String, Void>() {
-            @Override
-            protected Void doInBackground(Client.ClientMsg... params) {
-                try{
-                    Socket socket = new Socket(AppConfig.SocketServerIp, AppConfig.SocketServerPort);
-
-                    OutputStream os = socket.getOutputStream();
-
-                    Client.ClientMsg clientMsg = params[0];
-                    byte[] msgbytes = clientMsg.toByteArray();
-                    byte[] packbytes = ProtobufPacker.encodeMessage(msgbytes, 1000001, true);
-                    os.write(packbytes);
-
-                    publishProgress("success");
-
-                } catch (UnknownHostException e) {
-                    publishProgress("UnknownHost");
-                } catch (IOException e) {
-                    publishProgress("IOException");
-                }
-                return null;
-            }
-
-            @Override
-            protected void onProgressUpdate(String... values) {
-                super.onProgressUpdate(values);
-                String info = values[0];
-                Toast.makeText(getContext(), info, Toast.LENGTH_SHORT).show();
-            }
-        }.execute(clientMsg);
-
+        NetworkManager.getInstance().sendProtobufMessage(clientBuilder);
 
 //        person.writeTo(outputStream);
     }

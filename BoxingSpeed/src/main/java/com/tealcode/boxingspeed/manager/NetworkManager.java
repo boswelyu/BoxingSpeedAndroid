@@ -11,10 +11,9 @@ import com.tealcode.boxingspeed.protobuf.Server;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Boswell Yu on 2017/10/2.
@@ -26,6 +25,9 @@ public class NetworkManager {
     private static final int READ_BUFFER_SIZE = 8192;
     private static final int RECEIVE_BUFFER_SIZE = 32768;
     private static final int SERVER_MESSAGE_HEADER_SIZE = 16;
+
+    // 限制每帧中发出去的网络包数量
+    private static final int PACKET_LIMIT_PER_FRAME = 3;
 
     private static NetworkManager instance = null;
     public static NetworkManager getInstance() {
@@ -40,6 +42,10 @@ public class NetworkManager {
     private String serverIp;
     private int    serverPort;
     private Thread workingThread = null;
+    private Thread sendThread = null;
+    private Thread recvThread = null;
+    private Socket clientSocket = null;
+    private long lastCheckTime = 0;
 
     private boolean connecting = false;
     private boolean connected = false;
@@ -52,8 +58,8 @@ public class NetworkManager {
     private int    receiveOffset;
     private int    receiveLength;
 
-    private LinkedList<byte[]> sendQueue;
-    private LinkedList<Server.ServerMsg> recvQueue;
+    private ConcurrentLinkedQueue<byte[]> sendQueue;
+    private ConcurrentLinkedQueue<Server.ServerMsg> recvQueue;
 
     public void init(String ip, int port)
     {
@@ -68,6 +74,9 @@ public class NetworkManager {
         receiveBuffer = new byte[RECEIVE_BUFFER_SIZE];
         receiveOffset = 0;
         receiveLength = 0;
+
+        sendQueue = new ConcurrentLinkedQueue<>();
+        recvQueue = new ConcurrentLinkedQueue<>();
 
         this.inited = true;
     }
@@ -92,51 +101,67 @@ public class NetworkManager {
             connected = false;
         }
 
+        if(sendThread != null) {
+            sendThread.interrupt();
+        }
+
+        if(recvThread != null) {
+            recvThread.interrupt();
+        }
+
         workingThread = new Thread() {
-
-            private boolean finished = false;
-
-            @Override
-            public synchronized void start() {
-                super.start();
-                finished = false;
-            }
-
             @Override
             public void run() {
                 super.run();
-
                 try {
-                    Socket clientSocket = new Socket(serverIp, serverPort);
-
+                    clientSocket = new Socket(serverIp, serverPort);
                     buffOutputStream = new BufferedOutputStream(clientSocket.getOutputStream());
                     buffInputStream = new BufferedInputStream(clientSocket.getInputStream());
-
-
 
                     // 标记连接成功
                     connecting = false;
                     connected = true;
 
-                    // 以固定帧率检查数据接收和发送
-                    while (!finished) {
-                        if (processRecv()) {
-                            processSend();
+                    sendThread = new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            while(true) {
+                                processSend();
+
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    Log.d(TAG, "Send Thread Interrupted");
+                                }
+                            }
                         }
-                        // 分发收到的服务器消息
-                        processMessage();
-                    }
+                    };
+                    sendThread.start();
+
+                    recvThread = new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            while(true) {
+                                if(processRecv()) {
+                                    processMessage();
+                                }
+
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    Log.e(TAG, "Receive Thread Interrupted");
+                                }
+                            }
+                        }
+                    };
+                    recvThread.start();
 
                 } catch (IOException e) {
                     Log.e(TAG, "Create Socket Failed With Error: " + e.toString());
                     // TODO: Call Connection Failure Callback
                 }
-            }
-
-            @Override
-            public void interrupt() {
-                super.interrupt();
-                finished = true;
             }
         };
 
@@ -159,14 +184,16 @@ public class NetworkManager {
 
         // Encode the message, queue to send buffer
         byte[] msgbytes = ProtobufPacker.encodeMessage(clientMsg.toByteArray(), userId, true);
-        sendQueue.addLast(msgbytes);
+        sendQueue.add(msgbytes);
     }
 
     // 处理接收到的buffer数据
     private boolean processRecv()
     {
+
         // 把输入流上接收到的数据依次放入缓冲区
         try {
+
             int recvSize = buffInputStream.read(readBuffer);
 
             if(recvSize > 0) {
@@ -192,13 +219,40 @@ public class NetworkManager {
     // 处理消息发送队列
     private void processSend()
     {
+        int sendCount = 0;
+        // 限制每帧中发出去的消息数量
+        while(!sendQueue.isEmpty() && sendCount < PACKET_LIMIT_PER_FRAME) {
+            byte[] msgdata = sendQueue.poll();
 
+            try {
+
+                buffOutputStream.write(msgdata);
+                buffOutputStream.flush();
+
+                sendCount++;
+            } catch (IOException e) {
+                Log.e(TAG, "IOException when write to Output Stream");
+            }
+        }
+
+        long currTime = System.currentTimeMillis();
+        if(currTime - lastCheckTime > 2000) {
+            checkServerStatus();
+            lastCheckTime = currTime;
+        }
     }
 
     // 分发收到消息
     private void processMessage()
     {
-
+        // 每帧仅处理有限个服务器消息
+        int handledCount = 0;
+        while(!recvQueue.isEmpty() && handledCount < PACKET_LIMIT_PER_FRAME)
+        {
+            // TODO: 分发给各个消息的订阅者去处理
+            Log.d(TAG, "Received Server Message");
+            handledCount++;
+        }
     }
 
     private void parsePackage()
@@ -257,6 +311,14 @@ public class NetworkManager {
         }
     }
 
+    private void checkServerStatus()
+    {
+        // TODO: Packet a ping message and send to server
+
+        // Then check the time of last received pong from server, if longer than 6 seconds, consider
+        // server has disconnected
+    }
+
     private void handlePingPong()
     {
         // TODO: Hanlde PingPong Message
@@ -274,7 +336,7 @@ public class NetworkManager {
                 Server.ServerMsg serverMsg = Server.ServerMsg.parseFrom(msgdata);
 
                 if(serverMsg != null) {
-                    recvQueue.addLast(serverMsg);
+                    recvQueue.add(serverMsg);
                 }
 
             } catch (InvalidProtocolBufferException e) {
