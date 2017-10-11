@@ -250,7 +250,8 @@ public class NetworkManager {
         while(!recvQueue.isEmpty() && handledCount < PACKET_LIMIT_PER_FRAME)
         {
             // TODO: 分发给各个消息的订阅者去处理
-            Log.d(TAG, "Received Server Message");
+            Server.ServerMsg message = recvQueue.poll();
+            Log.d(TAG, "++ Received Server Message");
             handledCount++;
         }
     }
@@ -337,6 +338,7 @@ public class NetworkManager {
 
                 if(serverMsg != null) {
                     recvQueue.add(serverMsg);
+                    Log.d(TAG, "Parse Message success, added to message queue");
                 }
 
             } catch (InvalidProtocolBufferException e) {

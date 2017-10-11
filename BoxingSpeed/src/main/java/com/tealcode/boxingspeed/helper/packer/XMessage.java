@@ -14,9 +14,6 @@ public class XMessage {
     public static final int PINGPONG_MESSAGE = 0x00000001;
     public static final int PROTOBUF_MESSAGE = 0x00000002;
 
-
-
-
     private static final String TAG = "XMessage";
     // Data Type Length
     public static int XSIZE_OF(byte x) {return 1;}
