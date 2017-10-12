@@ -16,7 +16,9 @@ public class AppConstant {
 
     // 本地存储使用的Key
     public static final String KEY_SAVED_USERNAME = "saved_username";
+    public static final String KEY_SAVED_SESSIONKEY = "saved_session_key";
     public static final String KEY_SAVED_PASSWORD = "saved_password";
+
 
     // 状态参数
     public static final String STATUS_OK = "OK";

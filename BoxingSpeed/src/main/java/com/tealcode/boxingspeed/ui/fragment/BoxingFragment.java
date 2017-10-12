@@ -93,22 +93,15 @@ public class BoxingFragment extends BaseFragment implements IMeterReportListener
     private void startRecordBoxingSpeed()
     {
         // TODO: Start Recording
-//        MovementMeter meter = MovementMeter.Instance();
-//        if(meter != null) {
-//            meter.Start();
-//        }
-//        else {
-//            Log.e(TAG, "MovementMeter is NULL");
-//        }
-        // Test protobuf message functions
-        Client.ClientMsg.Builder clientBuilder = Client.ClientMsg.newBuilder();
-        Client.Login.Builder loginBuilder = Client.Login.newBuilder();
-        loginBuilder.setDeviceId("abcdefgh");
-        clientBuilder.setLogin(loginBuilder.build());
+        MovementMeter meter = MovementMeter.Instance();
+        if(meter != null) {
+            meter.Start();
+        }
+        else {
+            Log.e(TAG, "MovementMeter is NULL");
+        }
 
-        NetworkManager.getInstance().sendProtobufMessage(clientBuilder);
 
-//        person.writeTo(outputStream);
     }
 
     @Override

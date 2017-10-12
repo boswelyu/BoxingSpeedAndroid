@@ -9,6 +9,13 @@ public class GateKeeper {
     private static int    platform = 1;     // 1: Android; 2: IOS
     private static String version = "";
 
+    public static void init()
+    {
+        // 初始化当前玩家的环境数据
+        platform = 1;
+        version = "0.1";
+    }
+
     public static String getSessionKey() {
         return SessionKey;
     }

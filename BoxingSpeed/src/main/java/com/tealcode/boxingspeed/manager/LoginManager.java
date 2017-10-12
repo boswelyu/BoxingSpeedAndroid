@@ -1,15 +1,23 @@
 package com.tealcode.boxingspeed.manager;
 
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.google.protobuf.AbstractMessage;
 import com.tealcode.boxingspeed.config.AppConfig;
+import com.tealcode.boxingspeed.handler.IConnectHandler;
 import com.tealcode.boxingspeed.handler.IRegisterReplyHandler;
+import com.tealcode.boxingspeed.helper.GateKeeper;
 import com.tealcode.boxingspeed.message.LoginReply;
 import com.tealcode.boxingspeed.message.LoginRequest;
 import com.tealcode.boxingspeed.message.SocketEvent;
 import com.tealcode.boxingspeed.handler.ILoginReplyHandler;
+import com.tealcode.boxingspeed.protobuf.Client;
+import com.tealcode.boxingspeed.protobuf.Server;
+import com.tealcode.boxingspeed.utility.MD5Util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,12 +26,14 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by YuBo on 2017/9/18.
  */
 
-public class LoginManager {
+public class LoginManager extends Handler implements IConnectHandler {
     private static final String TAG = "LoginManager";
     private static LoginManager instance = null;
     public static LoginManager getInstance()
@@ -38,6 +48,11 @@ public class LoginManager {
     private IRegisterReplyHandler mRegisterReplyHandler;
     private AsyncTask<Void, Void, LoginReply> loginTask = null;
 
+    private LoginManager()
+    {
+        MessagePublisher.getInstance().register(Server.LoginReply.class, this);
+    }
+
     public void setRegisterHandler(IRegisterReplyHandler handler)
     {
         this.mRegisterReplyHandler = handler;
@@ -47,7 +62,7 @@ public class LoginManager {
         this.mLoginReplyHander = loginHandler;
     }
 
-    public void login(final String username, final String password)
+    public void login(final String username, final String password, final boolean dohash)
     {
         if(loginTask != null) {
             loginTask.cancel(true);
@@ -68,7 +83,7 @@ public class LoginManager {
                     urlConnection.setDoOutput(true);
 
                     PrintWriter printWriter = new PrintWriter(urlConnection.getOutputStream());
-                    printWriter.write(BuildLoginPostStr(username, password));
+                    printWriter.write(BuildLoginPostStr(username, password, dohash));
                     printWriter.flush();
 
                     // Read login response
@@ -113,11 +128,16 @@ public class LoginManager {
         // TODO: 清理本地存储的用户名和密码，切换到登录界面，并且设置切换参数为不自动登录
     }
 
-    private String BuildLoginPostStr(String username, String password)
+    private String BuildLoginPostStr(String username, String password, boolean dohash)
     {
         LoginRequest request = new LoginRequest();
         request.setUsername(username);
-        request.setPassword(password);
+
+        if(dohash) {
+            request.setPassword(MD5Util.encode(password));
+        } else {
+            request.setPassword(password);
+        }
 
         String ret = JSON.toJSONString(request);
         Log.d(TAG, ret);
@@ -133,6 +153,8 @@ public class LoginManager {
 
         if(reply != null && reply.getStatus().equals("OK")) {
             SaveLoginReplyData(reply);
+
+            initNetworkManager(reply.getServerIp(), reply.getServerPort());
         }
 
         return reply;
@@ -148,8 +170,53 @@ public class LoginManager {
         mLoginReplyHander.onSocketEvent(event);
     }
 
+    // 登录成功，在本地保存用户名和密码的MD5，并保存返回的SessionKey用于后续的消息加密
     private void SaveLoginReplyData(LoginReply reply)
     {
-        // TODO:
+        String sessionKey = reply.getSessionKey();
+        GateKeeper.setSessionKey(sessionKey);
+    }
+
+    private void initNetworkManager(String ipStr, int port)
+    {
+        NetworkManager.getInstance().init(ipStr, port);
+
+        NetworkManager.getInstance().registerConnectHandler(this);
+
+        NetworkManager.getInstance().connect();
+    }
+
+
+    @Override
+    public void connectedCallback() {
+        // Connected to server, Send login message
+        Client.ClientMsg.Builder clientBuilder = Client.ClientMsg.newBuilder();
+        Client.Login.Builder loginBuilder = Client.Login.newBuilder();
+        loginBuilder.setSequence(1);
+        loginBuilder.setDeviceId("abcdefgh");
+        clientBuilder.setLogin(loginBuilder.build());
+
+        NetworkManager.getInstance().sendProtobufMessage(clientBuilder);
+    }
+
+    @Override
+    public void disconnectedCallback() {
+
+    }
+
+    @Override
+    public void timeoutCallback() {
+
+    }
+
+    @Override
+    public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+
+        Class cls = msg.obj.getClass();
+        if(cls.equals(Server.LoginReply.class)) {
+            // Received Login Reply Message
+            
+        }
     }
 }

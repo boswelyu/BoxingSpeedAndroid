@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.tealcode.boxingspeed.config.AppConfig;
+import com.tealcode.boxingspeed.helper.GateKeeper;
 import com.tealcode.boxingspeed.helper.HttpImageLoader;
 import com.tealcode.boxingspeed.helper.LocalStorage;
 import com.tealcode.boxingspeed.manager.NetworkManager;
@@ -24,7 +25,6 @@ public class BSApplication extends Application {
         LocalStorage.init(appContext);
         HttpImageLoader.InitConfig(appContext);
 
-        NetworkManager.getInstance().init(AppConfig.SocketServerIp, AppConfig.SocketServerPort);
-        NetworkManager.getInstance().connect();
+        GateKeeper.init();
     }
 }

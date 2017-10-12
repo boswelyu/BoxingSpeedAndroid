@@ -5,7 +5,10 @@ package com.tealcode.boxingspeed.message;
  */
 
 public class LoginReply {
-    private String status;
+    private String  status;
+    private String  serverIp;
+    private int     serverPort;
+    private String  sessionKey;
 
     public String getStatus() {
         return status;
@@ -15,4 +18,27 @@ public class LoginReply {
         this.status = status;
     }
 
+    public String getServerIp() {
+        return serverIp;
+    }
+
+    public void setServerIp(String serverIp) {
+        this.serverIp = serverIp;
+    }
+
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public String getSessionKey() {
+        return sessionKey;
+    }
+
+    public void setSessionKey(String key) {
+        this.sessionKey = key;
+    }
 }

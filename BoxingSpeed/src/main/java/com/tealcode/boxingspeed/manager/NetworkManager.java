@@ -3,6 +3,7 @@ package com.tealcode.boxingspeed.manager;
 import android.util.Log;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.tealcode.boxingspeed.handler.IConnectHandler;
 import com.tealcode.boxingspeed.helper.GateKeeper;
 import com.tealcode.boxingspeed.helper.packer.ProtobufPacker;
 import com.tealcode.boxingspeed.helper.packer.XMessage;
@@ -60,6 +61,8 @@ public class NetworkManager {
 
     private ConcurrentLinkedQueue<byte[]> sendQueue;
     private ConcurrentLinkedQueue<Server.ServerMsg> recvQueue;
+
+    private IConnectHandler connectHander = null;
 
     public void init(String ip, int port)
     {
@@ -121,6 +124,10 @@ public class NetworkManager {
                     // 标记连接成功
                     connecting = false;
                     connected = true;
+
+                    if(connectHander != null) {
+                        connectHander.connectedCallback();
+                    }
 
                     sendThread = new Thread() {
                         @Override
@@ -187,6 +194,11 @@ public class NetworkManager {
         sendQueue.add(msgbytes);
     }
 
+    public void registerConnectHandler(IConnectHandler handler)
+    {
+        this.connectHander = handler;
+    }
+
     // 处理接收到的buffer数据
     private boolean processRecv()
     {
@@ -251,7 +263,9 @@ public class NetworkManager {
         {
             // TODO: 分发给各个消息的订阅者去处理
             Server.ServerMsg message = recvQueue.poll();
-            Log.d(TAG, "++ Received Server Message");
+
+            MessagePublisher.getInstance().publish(message);
+
             handledCount++;
         }
     }
@@ -302,7 +316,7 @@ public class NetworkManager {
             receiveLength = 0;
         } else if(receiveLength > receiveOffset){
             // 数据结尾没有对齐到完整的消息结束，需要保留剩余的数据，和后面收到的数据进行合并
-            // TODO: 需要验证java中这个自身的拷贝会不会导致数据被覆盖
+            // TODO: 需要验证java中这种自身的拷贝会不会导致数据被覆盖
             System.arraycopy(receiveBuffer, receiveOffset, receiveBuffer, 0, receiveLength - receiveOffset);
             receiveOffset = 0;
             receiveLength -= receiveOffset;

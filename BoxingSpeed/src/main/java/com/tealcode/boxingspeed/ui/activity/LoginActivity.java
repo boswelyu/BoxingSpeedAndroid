@@ -182,7 +182,7 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
         }
 
         if(canTryAutoLogin) {
-            LoginManager.getInstance().login(savedUsername, savedPassword);
+            LoginManager.getInstance().login(savedUsername, savedPassword, false);
         }else {
             // 延迟两秒，跳转到登录界面
             loginHandler.postDelayed(new Runnable() {
@@ -233,7 +233,7 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
 
         showProgress(true);
         username = username.trim();
-        LoginManager.getInstance().login(username, password);
+        LoginManager.getInstance().login(username, password, doHash);
     }
 
     private void showProgress(final boolean show) {
