@@ -16,6 +16,7 @@ import com.tealcode.boxingspeed.message.LoginRequest;
 import com.tealcode.boxingspeed.message.SocketEvent;
 import com.tealcode.boxingspeed.handler.ILoginReplyHandler;
 import com.tealcode.boxingspeed.protobuf.Client;
+import com.tealcode.boxingspeed.protobuf.Common;
 import com.tealcode.boxingspeed.protobuf.Server;
 import com.tealcode.boxingspeed.utility.MD5Util;
 
@@ -46,7 +47,10 @@ public class LoginManager extends Handler implements IConnectHandler {
 
     private ILoginReplyHandler mLoginReplyHander;
     private IRegisterReplyHandler mRegisterReplyHandler;
-    private AsyncTask<Void, Void, LoginReply> loginTask = null;
+    private AsyncTask<Void, Void, String> loginTask = null;
+
+    private boolean loginFinished = false;
+    private Common.RESULT  loginResult;
 
     private LoginManager()
     {
@@ -68,12 +72,12 @@ public class LoginManager extends Handler implements IConnectHandler {
             loginTask.cancel(true);
         }
 
-        loginTask = new AsyncTask<Void, Void, LoginReply>() {
+        loginTask = new AsyncTask<Void, Void, String>() {
 
             @Override
-            protected LoginReply doInBackground(Void... params) {
+            protected String doInBackground(Void... params) {
                 URL url = null;
-                LoginReply loginReply = null;
+                String retstatus = "";
                 try {
                     url = new URL(AppConfig.LoginServer);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -94,29 +98,47 @@ public class LoginManager extends Handler implements IConnectHandler {
                     byte[] buffer = new byte[1024];
                     while((len = bis.read(buffer)) != -1)
                     {
-                        bos.write(buffer, 0 , len);
+                        bos.write(buffer, 0, len);
                         bos.flush();
                     }
                     bos.close();
 
-                    String loginResult = bos.toString("utf-8");
-                    loginReply = HandleLoginResult(loginResult);
+                    String reply = bos.toString("utf-8");
+                    retstatus = HandleLoginResult(reply);
+
+                    if(retstatus.equals("OK")) {
+                        // 继续等待处理完登录返回消息后继续
+                        while(!loginFinished) {
+                            Thread.sleep(100);
+                        }
+
+                        // 检查Login消息的返回码
+                        return getLoginResult(loginResult);
+                    }
 
                 }catch(MalformedURLException urle) {
                     Log.e(TAG, "LoginURL Malformed");
                     HandleLoginSocketError(SocketEvent.ADDRESS_INVALID);
                 }catch(IOException ioe) {
                     HandleLoginSocketError(SocketEvent.ADDRESS_CONNECT_FAILED);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
 
-                return loginReply;
+                return retstatus;
             }
 
             @Override
-            protected void onPostExecute(LoginReply reply) {
-                // Update upper UI logic
-                if(mLoginReplyHander != null) {
-                    mLoginReplyHander.onLoginReply(reply);
+            protected void onPostExecute(String status) {
+                if(status.equals("OK")) {
+                    // Login Success
+                    if(mLoginReplyHander != null) {
+                        mLoginReplyHander.onLoginSuccess();
+                    }
+                }else {
+                    if(mLoginReplyHander != null) {
+                        mLoginReplyHander.onLoginFailure(status);
+                    }
                 }
             }
 
@@ -128,12 +150,12 @@ public class LoginManager extends Handler implements IConnectHandler {
         // TODO: 清理本地存储的用户名和密码，切换到登录界面，并且设置切换参数为不自动登录
     }
 
-    private String BuildLoginPostStr(String username, String password, boolean dohash)
+    private String BuildLoginPostStr(String username, String password, boolean doHash)
     {
         LoginRequest request = new LoginRequest();
         request.setUsername(username);
 
-        if(dohash) {
+        if(doHash) {
             request.setPassword(MD5Util.encode(password));
         } else {
             request.setPassword(password);
@@ -146,18 +168,33 @@ public class LoginManager extends Handler implements IConnectHandler {
     }
 
     // 解析登录请求返回
-    private LoginReply HandleLoginResult(String loginResponse)
+    private String HandleLoginResult(String loginResponse)
     {
-
         LoginReply reply = JSON.parseObject(loginResponse, LoginReply.class);
 
         if(reply != null && reply.getStatus().equals("OK")) {
             SaveLoginReplyData(reply);
-
-            initNetworkManager(reply.getServerIp(), reply.getServerPort());
+            if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) == 0) {
+                return reply.getStatus();
+            }
+            else {
+                return "Init Network Manager Failed";
+            }
         }
 
-        return reply;
+        if(reply != null) {
+            return reply.getStatus();
+        }else {
+            return "Null Reply";
+        }
+    }
+
+    private String getLoginResult(Common.RESULT result)
+    {
+        if(result == Common.RESULT.RESULT_SUCCESS) {
+            return "OK";
+        }
+        return result.toString();
     }
 
     private void HandleLoginSocketError(SocketEvent event)
@@ -173,17 +210,20 @@ public class LoginManager extends Handler implements IConnectHandler {
     // 登录成功，在本地保存用户名和密码的MD5，并保存返回的SessionKey用于后续的消息加密
     private void SaveLoginReplyData(LoginReply reply)
     {
+        String userId = reply.getUserId();
+        ProfilerManager.setUserId(userId);
+
         String sessionKey = reply.getSessionKey();
         GateKeeper.setSessionKey(sessionKey);
     }
 
-    private void initNetworkManager(String ipStr, int port)
+    private int initNetworkManager(String ipStr, int port)
     {
         NetworkManager.getInstance().init(ipStr, port);
 
         NetworkManager.getInstance().registerConnectHandler(this);
 
-        NetworkManager.getInstance().connect();
+        return NetworkManager.getInstance().connect();
     }
 
 
@@ -216,7 +256,18 @@ public class LoginManager extends Handler implements IConnectHandler {
         Class cls = msg.obj.getClass();
         if(cls.equals(Server.LoginReply.class)) {
             // Received Login Reply Message
-            
+            onServerLoginReply((Server.LoginReply)msg.obj);
         }
+    }
+
+    private void onServerLoginReply(Server.LoginReply reply)
+    {
+        // 检查状态码
+        loginResult = reply.getResult();
+        if(loginResult == Common.RESULT.RESULT_SUCCESS) {
+            // 保存返回的用户信息
+            ProfilerManager.getInstance().setUserProfiler(reply.getProfile());
+        }
+        loginFinished = true;
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +16,20 @@ import android.widget.TextView;
 
 import com.tealcode.boxingspeed.R;
 import com.tealcode.boxingspeed.helper.HttpImageLoader;
-import com.tealcode.boxingspeed.helper.entity.UserEntity;
 import com.tealcode.boxingspeed.manager.LoginManager;
 import com.tealcode.boxingspeed.manager.ProfilerManager;
+import com.tealcode.boxingspeed.protobuf.Server;
 import com.tealcode.boxingspeed.ui.widget.BaseImageView;
 
-import org.w3c.dom.Text;
+
 
 /**
  * Created by Boswell Yu on 2017/9/24.
  */
 
 public class ProfilerFragment extends BaseFragment {
+
+    private static final String TAG = "ProfilerFragment";
 
     private View currFragment = null;
 
@@ -127,26 +130,23 @@ public class ProfilerFragment extends BaseFragment {
 
     private void initPersonalView()
     {
-        UserEntity userEntity = ProfilerManager.getInstance().getUserEntity();
-        if(userEntity == null) {
-            userEntity = new UserEntity();
-            userEntity.setNickname("nickname");
-            userEntity.setUsername("username");
-            userEntity.setUserId(0);
-        }
-
         TextView nicknameView = (TextView) personalView.findViewById(R.id.nickname_text);
         TextView usernameView = (TextView) personalView.findViewById(R.id.username_text);
         BaseImageView portraitImageView = (BaseImageView) personalView.findViewById(R.id.user_portrait);
 
-        nicknameView.setText(userEntity.getNickname());
-        usernameView.setText(userEntity.getUsername());
+        Server.UserProfile profiler = ProfilerManager.getInstance().getUserProfiler();
+        if(profiler == null) {
+            Log.e(TAG, "Invalid User Profiler Exist!");
+        }
 
-        String avatarurl = userEntity.getAvatarUrl();
-        if(avatarurl == null || avatarurl.isEmpty()) {
+        nicknameView.setText(profiler.getNickname());
+        usernameView.setText(profiler.getUsername());
+
+        String avatarUrl = profiler.getAvatarUrl();
+        if(avatarUrl == null || avatarUrl.isEmpty()) {
             portraitImageView.setImageResource(R.drawable.default_user_portrait);
         } else {
-            portraitImageView.LoadImageFromUrl(avatarurl);
+            portraitImageView.LoadImageFromUrl(avatarUrl);
         }
 
         RelativeLayout container = (RelativeLayout) personalView.findViewById(R.id.user_container);

@@ -84,25 +84,22 @@ public class NetworkManager {
         this.inited = true;
     }
 
-    public void connect() {
+    // This function should be called from one separate thread besides UI Main, or from AsyncTask
+    public int connect() {
 
         if (!inited) {
             Log.e(TAG, "Not initialized yet!");
-            return;
+            return -1;
         }
 
         if (connecting) {
-            return;
+            return 0;
         }
 
         // 设置连接状态，避免重入
         connecting = true;
 
         // 结束掉以前的线程
-        if (workingThread != null) {
-            workingThread.interrupt();
-            connected = false;
-        }
 
         if(sendThread != null) {
             sendThread.interrupt();
@@ -112,67 +109,61 @@ public class NetworkManager {
             recvThread.interrupt();
         }
 
-        workingThread = new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    clientSocket = new Socket(serverIp, serverPort);
-                    buffOutputStream = new BufferedOutputStream(clientSocket.getOutputStream());
-                    buffInputStream = new BufferedInputStream(clientSocket.getInputStream());
+        try {
+            clientSocket = new Socket(serverIp, serverPort);
+            buffOutputStream = new BufferedOutputStream(clientSocket.getOutputStream());
+            buffInputStream = new BufferedInputStream(clientSocket.getInputStream());
 
-                    // 标记连接成功
-                    connecting = false;
-                    connected = true;
+            // 标记连接成功
+            connecting = false;
+            connected = true;
 
-                    if(connectHander != null) {
-                        connectHander.connectedCallback();
+            sendThread = new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    while(true) {
+                        processSend();
+
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+                            Log.d(TAG, "Send Thread Interrupted");
+                        }
                     }
-
-                    sendThread = new Thread() {
-                        @Override
-                        public void run() {
-                            super.run();
-                            while(true) {
-                                processSend();
-
-                                try {
-                                    Thread.sleep(50);
-                                } catch (InterruptedException e) {
-                                    Log.d(TAG, "Send Thread Interrupted");
-                                }
-                            }
-                        }
-                    };
-                    sendThread.start();
-
-                    recvThread = new Thread() {
-                        @Override
-                        public void run() {
-                            super.run();
-                            while(true) {
-                                if(processRecv()) {
-                                    processMessage();
-                                }
-
-                                try {
-                                    Thread.sleep(50);
-                                } catch (InterruptedException e) {
-                                    Log.e(TAG, "Receive Thread Interrupted");
-                                }
-                            }
-                        }
-                    };
-                    recvThread.start();
-
-                } catch (IOException e) {
-                    Log.e(TAG, "Create Socket Failed With Error: " + e.toString());
-                    // TODO: Call Connection Failure Callback
                 }
-            }
-        };
+            };
+            sendThread.start();
 
-        workingThread.start();
+            recvThread = new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    while(true) {
+                        if(processRecv()) {
+                            processMessage();
+                        }
+
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Receive Thread Interrupted");
+                        }
+                    }
+                }
+            };
+            recvThread.start();
+
+            if(connectHander != null) {
+                connectHander.connectedCallback();
+            }
+
+        } catch (IOException e) {
+            Log.e(TAG, "Create Socket Failed With Error: " + e.toString());
+            return -1;
+        }
+
+        return 0;
     }
 
     // 对外Send接口

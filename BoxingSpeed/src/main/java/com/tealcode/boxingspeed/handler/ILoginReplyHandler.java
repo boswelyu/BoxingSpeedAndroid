@@ -8,6 +8,7 @@ import com.tealcode.boxingspeed.message.SocketEvent;
  */
 
 public interface ILoginReplyHandler {
-    public void onLoginReply(LoginReply reply);
+    public void onLoginSuccess();
+    public void onLoginFailure(String reason);
     public void onSocketEvent(SocketEvent event);
 }

@@ -6,6 +6,7 @@ package com.tealcode.boxingspeed.message;
 
 public class LoginReply {
     private String  status;
+    private String  userId;
     private String  serverIp;
     private int     serverPort;
     private String  sessionKey;
@@ -16,6 +17,14 @@ public class LoginReply {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getServerIp() {

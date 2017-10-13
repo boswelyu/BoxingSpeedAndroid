@@ -35,9 +35,8 @@ public class BaseImageView extends AppCompatImageView {
 
     public void LoadImageFromUrl(String url)
     {
-        if(this.imageUrl.equals(url)) {
+        if(this.imageUrl != null && this.imageUrl.equals(url)) {
             // Already loaded the same image
-            Log.d(TAG, "Already loaded the same image: " + url);
             return;
         }
 

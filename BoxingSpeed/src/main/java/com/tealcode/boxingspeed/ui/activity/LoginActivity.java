@@ -245,24 +245,6 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
     }
 
 
-    // Implement ILoginReplyHandler callback functions
-    @Override
-    public void onLoginReply(LoginReply reply) {
-        if(reply == null) {
-            Toast.makeText(this, "Invalid login reply", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String message = reply.getStatus();
-        if(message.equals(AppConstant.STATUS_OK)) {
-            // Login Success, Switch to MainActivity
-            onLoginSuccess();
-        }
-        else {
-            onLoginFailure(message);
-        }
-    }
-
     @Override
     public void onSocketEvent(SocketEvent event) {
         switch(event) {
@@ -274,14 +256,14 @@ public class LoginActivity extends Activity implements ILoginReplyHandler {
         }
     }
 
-    private void onLoginSuccess()
+    public void onLoginSuccess()
     {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         LoginActivity.this.finish();
     }
 
-    private void onLoginFailure(String error)
+    public void onLoginFailure(String error)
     {
         showLoginPage();
 

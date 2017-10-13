@@ -3,6 +3,7 @@ package com.tealcode.boxingspeed.manager;
 import android.util.Log;
 
 import com.tealcode.boxingspeed.helper.entity.UserEntity;
+import com.tealcode.boxingspeed.protobuf.Server;
 
 /**
  * Created by YuBo on 2017/9/29.
@@ -19,31 +20,32 @@ public class ProfilerManager {
         return instance;
     }
 
-    private UserEntity mUserEntity;
+    private static int userId = 0;
 
-    public void setUserEntity(UserEntity ue) {
-        this.mUserEntity = ue;
+    private Server.UserProfile mUserProfiler;
+
+    public void setUserProfiler(Server.UserProfile prof) {
+        this.mUserProfiler = prof;
+
+        int uid = prof.getUserId();
+        if(uid != userId) {
+            Log.e(TAG, "Why I Got other one's userId: " + uid);
+        }
     }
 
-    public UserEntity getUserEntity()
+    public Server.UserProfile getUserProfiler()
     {
-        return this.mUserEntity;
+        return mUserProfiler;
+    }
+
+    public static void setUserId(String uid)
+    {
+        userId = Integer.parseInt(uid);
     }
 
     public static int getUserId()
     {
-        if(instance == null) {
-            Log.e(TAG, "ProfilerManager Instance Not Created Yet");
-            return 0;
-        }
-
-        UserEntity entity = instance.getUserEntity();
-        if(entity == null) {
-            Log.e(TAG, "User Entity Not Set yet");
-            return 0;
-        }
-        return entity.getUserId();
+        return userId;
     }
-
 
 }
