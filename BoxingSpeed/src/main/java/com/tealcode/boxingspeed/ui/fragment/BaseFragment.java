@@ -122,6 +122,11 @@ public class BaseFragment extends Fragment {
         topLeftText.setVisibility(View.VISIBLE);
     }
 
+    protected void hideTopLeftText()
+    {
+        topLeftText.setVisibility(View.GONE);
+    }
+
     protected void hideTopLeftButton()
     {
         topLeftButton.setVisibility(View.GONE);
@@ -144,10 +149,13 @@ public class BaseFragment extends Fragment {
         topRightText.setVisibility(View.VISIBLE);
     }
 
-
-
     protected void hideTopRightButton()
     {
         topRightButton.setVisibility(View.GONE);
+    }
+
+    protected void hideTopRightText()
+    {
+        topRightText.setVisibility(View.GONE);
     }
 }

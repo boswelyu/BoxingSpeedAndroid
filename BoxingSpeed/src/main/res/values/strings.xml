@@ -56,6 +56,9 @@
     <string name="confirm_clear_cache">确定清理本地图片缓存？</string>
     <string name="detail_user_info">详细资料</string>
 
+    <!-- 网络对战界面 -->
+    <string name="friend_arena">邀请好友对战</string>
+
 
     <!-- 通用弹出对话框 -->
     <string name="confirm">确定</string>

@@ -8,8 +8,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 
 import com.tealcode.boxingspeed.R;
+import com.tealcode.boxingspeed.ui.fragment.ArenaFragment;
 import com.tealcode.boxingspeed.ui.fragment.BoxingFragment;
+import com.tealcode.boxingspeed.ui.fragment.FriendsFragment;
 import com.tealcode.boxingspeed.ui.fragment.ProfilerFragment;
+import com.tealcode.boxingspeed.ui.fragment.RankingFragment;
 import com.tealcode.boxingspeed.ui.widget.NaviTabButton;
 
 /**
@@ -73,9 +76,9 @@ public class MainActivity extends FragmentActivity {
     {
         mFragments = new Fragment[5];
         mFragments[0] = new BoxingFragment();
-        mFragments[1] = new BoxingFragment();
-        mFragments[2] = new BoxingFragment();
-        mFragments[3] = new BoxingFragment();
+        mFragments[1] = new FriendsFragment();
+        mFragments[2] = new RankingFragment();
+        mFragments[3] = new ArenaFragment();
         mFragments[4] = new ProfilerFragment();
     }
 
