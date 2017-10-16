@@ -6,19 +6,20 @@ package com.tealcode.boxingspeed.helper.entity;
 
 // 基本用户数据，包括：用户名，昵称，性别，年龄，头像链接
 public class PeerEntity {
-    protected int userid;
+    protected int userId;
     protected String username;
     protected String nickname;
     protected String gender;
     protected int age;
+    protected String signature;
     protected String avatar_url;
 
     public int getUserId() {
-        return userid;
+        return userId;
     }
 
     public void setUserId(int id) {
-        this.userid = id;
+        this.userId = id;
     }
 
     public String getUsername() {
@@ -51,6 +52,14 @@ public class PeerEntity {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getSignature() {
+        return this.signature;
+    }
+
+    public void setSignature(String sign) {
+        this.signature = sign;
     }
 
     public String getAvatarUrl() {

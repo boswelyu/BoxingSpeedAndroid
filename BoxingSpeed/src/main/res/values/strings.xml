@@ -48,6 +48,11 @@
     <string name="boxing_time">记录时间</string>
     <string name="boxing_count">出拳次数</string>
 
+    <!-- 好友界面 -->
+    <string name="new_friend">新的朋友</string>
+    <string name="default_nickname">不知道叫什么好</string>
+    <string name="default_signature">你自己随便体会一下</string>
+
     <!-- 个人信息界面 -->
     <string name="notify_setting">通知设置</string>
     <string name="clear_cache">清理图片缓存</string>
