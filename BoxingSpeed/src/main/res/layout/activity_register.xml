@@ -175,7 +175,7 @@
                     android:layout_marginTop="13dp">
 
                     <EditText
-                        android:id="@+id/password"
+                        android:id="@+id/phone_pass_code_text"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@drawable/message_text_bg"
@@ -190,7 +190,7 @@
                 </RelativeLayout>
 
                 <Button
-                    android:id="@+id/register_button"
+                    android:id="@+id/phone_register_button"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
@@ -203,6 +203,31 @@
         </LinearLayout>
     </FrameLayout>
 
+    <!-- Register Progress page -->
+    <LinearLayout
+        android:id="@+id/register_status_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/half_transparent_light"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
 
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/register_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/register_progress_registering"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
 
 </merge>

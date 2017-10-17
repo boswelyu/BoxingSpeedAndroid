@@ -6,13 +6,13 @@ import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.google.protobuf.AbstractMessage;
 import com.tealcode.boxingspeed.config.AppConfig;
 import com.tealcode.boxingspeed.handler.IConnectHandler;
 import com.tealcode.boxingspeed.handler.IRegisterReplyHandler;
 import com.tealcode.boxingspeed.helper.GateKeeper;
 import com.tealcode.boxingspeed.message.LoginReply;
 import com.tealcode.boxingspeed.message.LoginRequest;
+import com.tealcode.boxingspeed.message.RegisterRequest;
 import com.tealcode.boxingspeed.message.SocketEvent;
 import com.tealcode.boxingspeed.handler.ILoginReplyHandler;
 import com.tealcode.boxingspeed.protobuf.Client;
@@ -27,8 +27,6 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by YuBo on 2017/9/18.
@@ -48,6 +46,8 @@ public class LoginManager extends Handler implements IConnectHandler {
     private ILoginReplyHandler mLoginReplyHander;
     private IRegisterReplyHandler mRegisterReplyHandler;
     private AsyncTask<Void, Void, String> loginTask = null;
+    private AsyncTask<Void, Void, Integer> registerTask = null;
+    private String errorInfo = "";
 
     private boolean loginFinished = false;
     private Common.RESULT  loginResult;
@@ -79,7 +79,7 @@ public class LoginManager extends Handler implements IConnectHandler {
                 URL url = null;
                 String retstatus = "";
                 try {
-                    url = new URL(AppConfig.LoginServer);
+                    url = new URL(AppConfig.LoginUrl);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("POST");
 
@@ -145,6 +145,80 @@ public class LoginManager extends Handler implements IConnectHandler {
         }.execute();
     }
 
+    public void emailRegister(final String username, final String password)
+    {
+        if(registerTask != null) {
+            registerTask.cancel(true);
+        }
+
+        registerTask = new AsyncTask<Void, Void, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                URL url = null;
+                int retstatus = 0;
+                try {
+                    url = new URL(AppConfig.RegisterUrl);
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+
+                    urlConnection.setDoInput(true);
+                    urlConnection.setDoOutput(true);
+
+                    PrintWriter printWriter = new PrintWriter(urlConnection.getOutputStream());
+                    printWriter.write(BuildRegisterPostStr(username, password));
+                    printWriter.flush();
+
+                    // Read login response
+                    BufferedInputStream bis = new BufferedInputStream(urlConnection.getInputStream());
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+                    int len;
+                    byte[] buffer = new byte[1024];
+                    while((len = bis.read(buffer)) != -1)
+                    {
+                        bos.write(buffer, 0, len);
+                        bos.flush();
+                    }
+                    bos.close();
+
+                    String reply = bos.toString("utf-8");
+                    retstatus = HandleRegisterResult(reply);
+
+
+                }catch(MalformedURLException urle) {
+                    Log.e(TAG, "LoginURL Malformed");
+                    HandleLoginSocketError(SocketEvent.ADDRESS_INVALID);
+                }catch(IOException ioe) {
+                    HandleLoginSocketError(SocketEvent.ADDRESS_CONNECT_FAILED);
+                }
+
+                return retstatus;
+            }
+
+            @Override
+            protected void onPostExecute(Integer status) {
+                int retstatus = status.intValue();
+                if(retstatus == 0) {
+                    // Login Success
+                    if(mRegisterReplyHandler != null) {
+                        mRegisterReplyHandler.onRegisterSuccess();
+                    }
+                }else {
+                    if(mRegisterReplyHandler != null) {
+                        mRegisterReplyHandler.onRegisterFailure(retstatus, errorInfo);
+                    }
+                }
+            }
+
+        }.execute();
+    }
+
+    public void phoneRegister(String phonenum, String passcode)
+    {
+
+    }
+
     public void logout()
     {
         // TODO: 清理本地存储的用户名和密码，切换到登录界面，并且设置切换参数为不自动登录
@@ -167,15 +241,25 @@ public class LoginManager extends Handler implements IConnectHandler {
         return ret;
     }
 
+    private String BuildRegisterPostStr(String username, String password)
+    {
+        RegisterRequest request = new RegisterRequest();
+        request.setUsername(username);
+        request.setPassword(MD5Util.encode(password));
+
+        String ret = JSON.toJSONString(request);
+        return ret;
+    }
+
     // 解析登录请求返回
     private String HandleLoginResult(String loginResponse)
     {
         LoginReply reply = JSON.parseObject(loginResponse, LoginReply.class);
 
-        if(reply != null && reply.getStatus().equals("OK")) {
+        if(reply != null && reply.getStatus() == 0) {
             SaveLoginReplyData(reply);
             if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) == 0) {
-                return reply.getStatus();
+                return "OK";
             }
             else {
                 return "Init Network Manager Failed";
@@ -183,10 +267,34 @@ public class LoginManager extends Handler implements IConnectHandler {
         }
 
         if(reply != null) {
-            return reply.getStatus();
+            return reply.getErrorInfo();
         }else {
             return "Null Reply";
         }
+    }
+
+    private int HandleRegisterResult(String registerResponse)
+    {
+        LoginReply reply = JSON.parseObject(registerResponse, LoginReply.class);
+        if(reply != null && reply.getStatus() == 0) {
+            SaveLoginReplyData(reply);
+            if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) == 0) {
+                return 0;
+            }
+            else {
+                // TODO: Manager Internal error code
+                errorInfo = "Internal Error: Init NetworkManager Failed";
+                return -1;
+            }
+        }
+
+        if(reply != null) {
+            errorInfo = reply.getErrorInfo();
+            return reply.getStatus();
+        }
+        // TODO: Error Code
+        errorInfo = "Unexpected Error: Empty Reply";
+        return -2;
     }
 
     private String getLoginResult(Common.RESULT result)

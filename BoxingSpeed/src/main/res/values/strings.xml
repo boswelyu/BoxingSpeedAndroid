@@ -14,11 +14,15 @@
     <string name="action_sign_in_short">进入</string>
     <string name="action_forgot_password">Recover lost password</string>
     <string name="login_progress_signing_in">正在登录&#8230;</string>
+    <string name="register_progress_registering">正在注册&#8230;</string>
     <string name="error_invalid_email">用户名不合法</string>
     <string name="error_invalid_password">亲，密码太短了</string>
     <string name="error_incorrect_user">请检查用户名密码是否正确</string>
     <string name="error_name_required">请输入用户名</string>
     <string name="error_pwd_required">请输入密码</string>
+    <string name="error_confirm_pwd_required">请再次输入相同的密码</string>
+    <string name="error_confirm_pwd_mismatch">两次输入的密码不匹配，请重新输入</string>
+
     <string name="invalid_account">登录失败,请重试</string>
     <string name="internal_error">服务器内部错误，请联系管理员</string>
     <string name="unknown_error">位置错误，请联系开发者</string>

@@ -5,18 +5,27 @@ package com.tealcode.boxingspeed.message;
  */
 
 public class LoginReply {
-    private String  status;
+    private int  status;
+    private String errorInfo;
     private String  userId;
     private String  serverIp;
     private int     serverPort;
     private String  sessionKey;
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getErrorInfo() {
+        return errorInfo;
+    }
+
+    public void setErrorInfo(String errorInfo) {
+        this.errorInfo = errorInfo;
     }
 
     public String getUserId() {
