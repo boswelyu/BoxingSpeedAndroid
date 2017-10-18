@@ -30,7 +30,17 @@ public class ProtobufPacker {
     */
     public static byte[] encodeMessage(byte[] data, int userId, boolean encrypt)
     {
-        int packlen = data.length + 16;
+        byte[] encrydata = data;
+        if(encrypt) {
+            encrydata = AES.encrypt(data);
+            if(encrydata == null) {
+                // encrypt failed
+                Log.e(TAG, "Encrypt Message Failed!");
+                return null;
+            }
+        }
+
+        int packlen = encrydata.length + 16;
         byte[] packdata = new byte[packlen];
         int offset = 0;
         offset = XMessage.PACK((byte)1, packdata, offset);
@@ -46,18 +56,8 @@ public class ProtobufPacker {
         offset = XMessage.PACK(XMessage.PROTOBUF_MESSAGE, packdata, offset);
         offset = XMessage.PACK(userId, packdata, offset);
 
-        int result = 0;
-        if(encrypt) {
-            result = AES.encrypt(data, GateKeeper.getSessionKey(), packdata, offset);
-        }
-        else {
-            System.arraycopy(data, 0, packdata, offset, data.length);
-        }
+        System.arraycopy(encrydata, 0, packdata, offset, encrydata.length);
 
-        if(result != 0) {
-            // 加密成功，返回组装之后的数据
-            Log.e(TAG, "Encrypt protobuf message failed with error: " + result);
-        }
         return packdata;
     }
 
@@ -66,38 +66,28 @@ public class ProtobufPacker {
     *      4          ...
     *  ErrorCode | Proto Data
     */
-    public static DecodeResult decodeMessage(byte[] buffer, int offset, int length)
+    public static Server.ServerMsg decodeMessage(byte[] buffer, int offset, int length, boolean encrypted)
     {
-        int ecode = XMessage.UNPACK_INT(buffer, offset);
-        offset += XMessage.XSIZE_OF(ecode);
+        Server.ServerMsg serverMsg = null;
+        byte[] data = new byte[length];
+        System.arraycopy(buffer, offset, data, 0, length);
 
-        if(ecode == 0) {
-            try {
-                Server.ServerMsg serverMsg = Server.ServerMsg.parseFrom(XMessage.UNAPCK_BYTES(buffer, offset, length));
-                return new DecodeResult(ecode, serverMsg);
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
-            }
+        byte[] decoded_data;
+        if(encrypted) {
+            decoded_data = AES.decrypt(data);
         }
         else {
-            return new DecodeResult(ecode);
+            decoded_data = data;
         }
 
-        return null;
+        try {
+            serverMsg = Server.ServerMsg.parseFrom(XMessage.UNAPCK_BYTES(decoded_data, 0, length));
+        } catch (InvalidProtocolBufferException e) {
+            Log.e(TAG, "Decode Server Message Failed with exception: " + e.toString());
+        }
+
+
+        return serverMsg;
     }
 
-    public static class DecodeResult {
-        public int errorCode;
-        public Server.ServerMsg serverMsg;
-
-        public DecodeResult(int ecode)
-        {
-            this.errorCode = ecode;
-        }
-
-        public DecodeResult(int ecode, Server.ServerMsg msg) {
-            this.errorCode = ecode;
-            this.serverMsg = msg;
-        }
-    }
 }

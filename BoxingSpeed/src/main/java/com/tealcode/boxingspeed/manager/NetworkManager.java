@@ -295,7 +295,7 @@ public class NetworkManager {
                     handlePingPong();
                     break;
                 case XMessage.PROTOBUF_MESSAGE:
-                    handleProtobufMessage(packetLen - 12);
+                    handleProtobufMessage(packetLen - 12, encrypt != 0);
                     break;
             }
         }
@@ -330,24 +330,21 @@ public class NetworkManager {
         // TODO: Hanlde PingPong Message
     }
 
-    private void handleProtobufMessage(int messageLen)
+    private void handleProtobufMessage(int messageLen, boolean encrypted)
     {
         int errorCode = XMessage.UNPACK_INT(receiveBuffer, receiveOffset);
         receiveOffset += 4;
 
         if(errorCode == 0) {
-            byte[] msgdata = XMessage.UNAPCK_BYTES(receiveBuffer, receiveOffset, messageLen - 4);
 
-            try {
-                Server.ServerMsg serverMsg = Server.ServerMsg.parseFrom(msgdata);
+            Server.ServerMsg serverMsg = ProtobufPacker.decodeMessage(receiveBuffer, receiveOffset, messageLen - 4, encrypted);
 
-                if(serverMsg != null) {
-                    recvQueue.add(serverMsg);
-                    Log.d(TAG, "Parse Message success, added to message queue");
-                }
-
-            } catch (InvalidProtocolBufferException e) {
-                Log.e(TAG, "Protobuf Message Parse Failed with exception");
+            if(serverMsg != null) {
+                recvQueue.add(serverMsg);
+                Log.d(TAG, "Parse Message success, added to message queue");
+            }
+            else {
+                Log.e(TAG, "Parse Server Message Failed!");
             }
         }
 

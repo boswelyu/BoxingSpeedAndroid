@@ -18,6 +18,7 @@ import com.tealcode.boxingspeed.handler.ILoginReplyHandler;
 import com.tealcode.boxingspeed.protobuf.Client;
 import com.tealcode.boxingspeed.protobuf.Common;
 import com.tealcode.boxingspeed.protobuf.Server;
+import com.tealcode.boxingspeed.utility.AES;
 import com.tealcode.boxingspeed.utility.MD5Util;
 
 import java.io.BufferedInputStream;
@@ -258,12 +259,16 @@ public class LoginManager extends Handler implements IConnectHandler {
 
         if(reply != null && reply.getStatus() == 0) {
             SaveLoginReplyData(reply);
-            if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) == 0) {
-                return "OK";
+
+            if(AES.init(reply.getSessionKey()) != 0) {
+                return "AES Init Failed";
             }
-            else {
+
+            if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) != 0) {
                 return "Init Network Manager Failed";
             }
+
+            return "OK";
         }
 
         if(reply != null) {
@@ -278,14 +283,19 @@ public class LoginManager extends Handler implements IConnectHandler {
         LoginReply reply = JSON.parseObject(registerResponse, LoginReply.class);
         if(reply != null && reply.getStatus() == 0) {
             SaveLoginReplyData(reply);
-            if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) == 0) {
-                return 0;
+            if(AES.init(reply.getSessionKey()) != 0)
+            {
+                errorInfo = "Init AES Failed";
+                return -1;
             }
-            else {
-                // TODO: Manager Internal error code
+
+            if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) != 0) {
                 errorInfo = "Internal Error: Init NetworkManager Failed";
                 return -1;
             }
+
+
+            return 0;
         }
 
         if(reply != null) {
