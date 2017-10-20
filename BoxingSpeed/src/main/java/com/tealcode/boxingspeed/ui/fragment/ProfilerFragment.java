@@ -2,6 +2,7 @@ package com.tealcode.boxingspeed.ui.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -15,7 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tealcode.boxingspeed.R;
+import com.tealcode.boxingspeed.helper.AppConstant;
 import com.tealcode.boxingspeed.helper.HttpImageLoader;
+import com.tealcode.boxingspeed.manager.ActivityManager;
 import com.tealcode.boxingspeed.manager.LoginManager;
 import com.tealcode.boxingspeed.manager.ProfilerManager;
 import com.tealcode.boxingspeed.protobuf.Server;
@@ -154,6 +157,7 @@ public class ProfilerFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 // TODO: Open Profiler Activity
+                ActivityManager.startUserInfoActivity(getContext(), ProfilerManager.getUserId());
             }
         });
 

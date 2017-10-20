@@ -17,6 +17,7 @@
     <color name="contact_realname_color">#aaaaaa</color>
     <color name="default_key_color">#999999</color>
     <color name="default_line_color">#cccccc</color>
+    <color name="list_item_background">#ffffff</color>
 
     <!-- login -->
     <color name="default_bk">#ffffff</color>

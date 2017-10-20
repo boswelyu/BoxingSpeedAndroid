@@ -4,7 +4,205 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!-- 头像 + 性别-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="168dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        >
 
+        <com.tealcode.boxingspeed.ui.widget.BaseImageView
+            android:id="@+id/user_portrait"
+            android:layout_height="136dp"
+            android:layout_width="136dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_centerHorizontal="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_user_portrait"
+            />
+
+        <ImageButton
+            android:id="@+id/userinfo_gender"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:background="@drawable/gender_female"
+            />
+
+    </RelativeLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/list_item_background"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:shrinkColumns="1">
+
+        <View android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/default_line_color" />
+        <!-- User Name-->
+        <TableRow>
+            <TextView
+                android:layout_height="48dp"
+                android:layout_column="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/detail_username"
+                android:textColor="@color/default_key_color"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:layout_height="48dp"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center_vertical"
+                android:text=""
+                android:textColor="@color/default_value_color"
+                android:textSize="16sp"
+                />
+        </TableRow>
+        <View android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/default_line_color" />
+
+        <!-- Nickname -->
+        <TableRow>
+            <TextView
+                android:layout_height="48dp"
+                android:layout_column="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/detail_nickname"
+                android:textColor="@color/default_key_color"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:id="@+id/userinfo_nickname"
+                android:layout_height="48dp"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center_vertical"
+                android:text="Nickname"
+                android:textColor="@color/default_value_color"
+                android:textSize="16sp"
+                />
+        </TableRow>
+        <View android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/default_line_color" />
+
+        <!-- Phone Number -->
+        <TableRow>
+            <TextView
+                android:layout_height="48dp"
+                android:layout_column="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/detail_bind_phone"
+                android:textColor="@color/default_key_color"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:id="@+id/userinfo_phone_number"
+                android:layout_height="48dp"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center_vertical"
+                android:text="18905327696"
+                android:textColor="@color/default_value_color"
+                android:textSize="16sp"
+                />
+        </TableRow>
+        <View android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/default_line_color" />
+
+        <!-- Age -->
+        <TableRow>
+            <TextView
+                android:layout_height="48dp"
+                android:layout_column="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/detail_birth"
+                android:textColor="@color/default_key_color"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:id="@+id/userinfo_birth"
+                android:layout_height="48dp"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center_vertical"
+                android:text="24"
+                android:textColor="@color/default_value_color"
+                android:textSize="16sp"
+                />
+        </TableRow>
+        <View android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/default_line_color" />
+
+        <!-- Location -->
+        <TableRow>
+            <TextView
+                android:layout_height="48dp"
+                android:layout_column="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/detail_location"
+                android:textColor="@color/default_key_color"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:layout_height="48dp"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center_vertical"
+                android:text="shanghai"
+                android:textColor="@color/default_value_color"
+                android:textSize="16sp"
+                />
+        </TableRow>
+        <View android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/default_line_color" />
+
+        <!-- Signature -->
+        <TableRow>
+            <TextView
+                android:layout_height="48dp"
+                android:layout_column="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/detail_signature"
+                android:textColor="@color/default_key_color"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:layout_height="100dp"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center_vertical"
+                android:text=""
+                android:textColor="@color/default_value_color"
+                android:textSize="16sp"
+                android:lines="2"
+                />
+        </TableRow>
+        <View android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/default_line_color" />
+    </TableLayout>
+
+    <Button
+        android:id="@+id/userinfo_chat"
+        android:layout_width="196dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/default_btn_bg"
+        android:textSize="16dp"
+        android:text="发送消息"
+        />
 
 
 </LinearLayout>

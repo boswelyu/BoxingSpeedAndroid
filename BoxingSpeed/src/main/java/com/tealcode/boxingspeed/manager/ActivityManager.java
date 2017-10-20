@@ -12,10 +12,10 @@ import com.tealcode.boxingspeed.ui.activity.UserInfoActivity;
 
 public class ActivityManager {
 
-    public static void startUserInfoActivity(Context context, int peerid)
+    public static void startUserInfoActivity(Context context, int userid)
     {
         Intent intent = new Intent(context, UserInfoActivity.class);
-        intent.putExtra(AppConstant.INTENT_KEY_PEERID, peerid);
+        intent.putExtra(AppConstant.KEY_INTENT_USERID, userid);
         context.startActivity(intent);
     }
 }

@@ -7,8 +7,7 @@ package com.tealcode.boxingspeed.helper;
 public class AppConstant {
     // Intent间使用的参数
     public static final String KEY_AUTO_LOGIN = "auto_login";
-
-    public static final String INTENT_KEY_PEERID = "intent_peerid";
+    public static final String KEY_INTENT_USERID = "user_id";
 
     public static final String KEY_REGISTER_TYPE = "register_type";
     public static final String VALUE_PHONE_REG = "phone_number_register";

@@ -5,8 +5,9 @@
     android:layout_height="match_parent">
 
     <fragment
+        android:id="@+id/user_info_fragment"
         android:name="com.tealcode.boxingspeed.ui.fragment.UserInfoFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
 
 </LinearLayout>
