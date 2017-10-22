@@ -1,22 +1,17 @@
 package com.tealcode.boxingspeed.ui.fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tealcode.boxingspeed.R;
-import com.tealcode.boxingspeed.helper.AppConstant;
 import com.tealcode.boxingspeed.helper.HttpImageLoader;
 import com.tealcode.boxingspeed.manager.ActivityManager;
 import com.tealcode.boxingspeed.manager.LoginManager;
@@ -149,7 +144,7 @@ public class ProfilerFragment extends BaseFragment {
         if(avatarUrl == null || avatarUrl.isEmpty()) {
             portraitImageView.setImageResource(R.drawable.default_user_portrait);
         } else {
-            portraitImageView.LoadImageFromUrl(avatarUrl);
+            portraitImageView.loadImageFromUrl(avatarUrl);
         }
 
         RelativeLayout container = (RelativeLayout) personalView.findViewById(R.id.user_container);

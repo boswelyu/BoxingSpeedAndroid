@@ -6,18 +6,20 @@
     android:layout_height="wrap_content">
 
 
-    <ImageView
+    <com.tealcode.boxingspeed.ui.widget.BaseImageView
         android:id="@+id/friend_button_image"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-
-        app:srcCompat="@drawable/default_user_portrait" />
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/default_user_portrait" />
 
     <RelativeLayout
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_weight="1"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         android:orientation="vertical"
         android:layout_gravity="center_vertical">
 
@@ -25,7 +27,7 @@
             android:id="@+id/buttonNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="32sp"
+            android:textSize="21sp"
             android:text="新的朋友" />
 
         <TextView

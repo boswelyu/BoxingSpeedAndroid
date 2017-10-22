@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tealcode.boxingspeed.R;
@@ -59,7 +58,7 @@ public class FriendListAdapter extends BaseAdapter {
             PeerEntity peerInfo = (PeerEntity) getItem(position);
             if(peerInfo != null) {
                 if(peerInfo.getAvatarUrl() != null) {
-                    holder.headImage.LoadImageFromUrl(peerInfo.getAvatarUrl());
+                    holder.headImage.loadImageFromUrl(peerInfo.getAvatarUrl());
                 } else {
                     holder.headImage.setImageResource(R.drawable.default_user_portrait);
                 }
@@ -76,7 +75,7 @@ public class FriendListAdapter extends BaseAdapter {
             PeerEntity peerInfo = (PeerEntity) getItem(position);
             if(peerInfo != null) {
                 if(peerInfo.getAvatarUrl() != null) {
-                    holder.headImage.LoadImageFromUrl(peerInfo.getAvatarUrl());
+                    holder.headImage.loadImageFromUrl(peerInfo.getAvatarUrl());
                 } else {
                     holder.headImage.setImageResource(R.drawable.default_user_portrait);
                 }

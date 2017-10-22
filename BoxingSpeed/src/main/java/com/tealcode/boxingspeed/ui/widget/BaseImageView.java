@@ -1,10 +1,8 @@
 package com.tealcode.boxingspeed.ui.widget;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.tealcode.boxingspeed.R;
 import com.tealcode.boxingspeed.helper.HttpImageLoader;
@@ -33,7 +31,7 @@ public class BaseImageView extends AppCompatImageView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void LoadImageFromUrl(String url)
+    public void loadImageFromUrl(String url)
     {
         if(this.imageUrl != null && this.imageUrl.equals(url)) {
             // Already loaded the same image
@@ -49,7 +47,7 @@ public class BaseImageView extends AppCompatImageView {
         super.onAttachedToWindow();
         attachedOnWindow = true;
         if(this.imageUrl != null) {
-            LoadImageFromUrl(this.imageUrl);
+            loadImageFromUrl(this.imageUrl);
         }
     }
 

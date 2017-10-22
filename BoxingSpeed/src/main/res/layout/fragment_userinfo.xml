@@ -14,7 +14,7 @@
         >
 
         <com.tealcode.boxingspeed.ui.widget.BaseImageView
-            android:id="@+id/user_portrait"
+            android:id="@+id/userinfo_portrait"
             android:layout_height="136dp"
             android:layout_width="136dp"
             android:layout_marginTop="16dp"
@@ -41,17 +41,14 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/list_item_background"
+        android:background="@color/default_light_grey_color"
         android:gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
         android:shrinkColumns="1">
 
-        <View android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/default_line_color" />
         <!-- User Name-->
-        <TableRow>
+        <TableRow
+            android:layout_marginTop="0.5dp"
+            android:background="@color/list_item_background">
             <TextView
                 android:layout_height="48dp"
                 android:layout_column="1"
@@ -59,6 +56,7 @@
                 android:text="@string/detail_username"
                 android:textColor="@color/default_key_color"
                 android:textSize="16sp"
+                android:layout_marginLeft="8dp"
                 />
             <TextView
                 android:layout_height="48dp"
@@ -69,12 +67,11 @@
                 android:textSize="16sp"
                 />
         </TableRow>
-        <View android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/default_line_color" />
 
         <!-- Nickname -->
-        <TableRow>
+        <TableRow
+            android:layout_marginTop="0.5dp"
+            android:background="@color/list_item_background">
             <TextView
                 android:layout_height="48dp"
                 android:layout_column="1"
@@ -82,6 +79,7 @@
                 android:text="@string/detail_nickname"
                 android:textColor="@color/default_key_color"
                 android:textSize="16sp"
+                android:layout_marginLeft="8dp"
                 />
             <TextView
                 android:id="@+id/userinfo_nickname"
@@ -93,12 +91,11 @@
                 android:textSize="16sp"
                 />
         </TableRow>
-        <View android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/default_line_color" />
 
         <!-- Phone Number -->
-        <TableRow>
+        <TableRow android:id="@+id/userinfo_phone_row"
+            android:background="@color/list_item_background"
+            android:layout_marginTop="0.5dp">
             <TextView
                 android:layout_height="48dp"
                 android:layout_column="1"
@@ -106,6 +103,7 @@
                 android:text="@string/detail_bind_phone"
                 android:textColor="@color/default_key_color"
                 android:textSize="16sp"
+                android:layout_marginLeft="8dp"
                 />
             <TextView
                 android:id="@+id/userinfo_phone_number"
@@ -117,12 +115,11 @@
                 android:textSize="16sp"
                 />
         </TableRow>
-        <View android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/default_line_color" />
 
-        <!-- Age -->
-        <TableRow>
+        <!-- Birth -->
+        <TableRow
+            android:layout_marginTop="0.5dp"
+            android:background="@color/list_item_background">
             <TextView
                 android:layout_height="48dp"
                 android:layout_column="1"
@@ -130,6 +127,7 @@
                 android:text="@string/detail_birth"
                 android:textColor="@color/default_key_color"
                 android:textSize="16sp"
+                android:layout_marginLeft="8dp"
                 />
             <TextView
                 android:id="@+id/userinfo_birth"
@@ -141,12 +139,11 @@
                 android:textSize="16sp"
                 />
         </TableRow>
-        <View android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/default_line_color" />
 
         <!-- Location -->
-        <TableRow>
+        <TableRow
+            android:layout_marginTop="0.5dp"
+            android:background="@color/list_item_background">
             <TextView
                 android:layout_height="48dp"
                 android:layout_column="1"
@@ -154,8 +151,10 @@
                 android:text="@string/detail_location"
                 android:textColor="@color/default_key_color"
                 android:textSize="16sp"
+                android:layout_marginLeft="8dp"
                 />
             <TextView
+                android:id="@+id/userinfo_location"
                 android:layout_height="48dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
@@ -164,12 +163,11 @@
                 android:textSize="16sp"
                 />
         </TableRow>
-        <View android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/default_line_color" />
 
         <!-- Signature -->
-        <TableRow>
+        <TableRow
+            android:layout_margin="0.5dp"
+            android:background="@color/list_item_background">
             <TextView
                 android:layout_height="48dp"
                 android:layout_column="1"
@@ -177,8 +175,10 @@
                 android:text="@string/detail_signature"
                 android:textColor="@color/default_key_color"
                 android:textSize="16sp"
+                android:layout_marginLeft="8dp"
                 />
             <TextView
+                android:id="@+id/userinfo_signature"
                 android:layout_height="100dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
@@ -188,13 +188,11 @@
                 android:lines="2"
                 />
         </TableRow>
-        <View android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/default_line_color" />
+
     </TableLayout>
 
     <Button
-        android:id="@+id/userinfo_chat"
+        android:id="@+id/userinfo_command"
         android:layout_width="196dp"
         android:layout_height="48dp"
         android:layout_marginTop="4dp"

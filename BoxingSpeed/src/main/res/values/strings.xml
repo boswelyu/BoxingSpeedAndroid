@@ -71,6 +71,10 @@
     <string name="detail_birth">出生日期</string>
     <string name="detail_location">所在地区</string>
     <string name="detail_signature">个性签名</string>
+    <string name="saving_profile">正在保存修改</string>
+    <string name="upload_avatar_success">上传头像成功</string>
+    <string name="upload_avatar_failed">上传头像失败</string>
+
 
 
     <!-- 网络对战界面 -->
