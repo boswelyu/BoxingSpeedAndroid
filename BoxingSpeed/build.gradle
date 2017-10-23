@@ -30,6 +30,7 @@ dependencies {
     compile 'com.alibaba:fastjson:1.2.38'
     compile 'com.google.protobuf:protobuf-java:3.4.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'com.edmodo:cropper:2.0.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/universal-image-loader-1.9.5.jar')
 }

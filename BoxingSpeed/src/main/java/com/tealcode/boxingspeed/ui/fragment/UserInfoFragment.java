@@ -2,10 +2,13 @@ package com.tealcode.boxingspeed.ui.fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +28,13 @@ import com.tealcode.boxingspeed.config.AppConfig;
 import com.tealcode.boxingspeed.helper.AppConstant;
 import com.tealcode.boxingspeed.manager.ProfilerManager;
 import com.tealcode.boxingspeed.protobuf.Server;
+import com.tealcode.boxingspeed.ui.activity.CropImageActivity;
 import com.tealcode.boxingspeed.ui.widget.BaseImageView;
+import com.tealcode.boxingspeed.utility.ImageUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -42,6 +45,12 @@ import cz.msebera.android.httpclient.Header;
 public class UserInfoFragment extends BaseFragment {
 
     private static final String TAG = "UserInfoFragment";
+
+    private static UserInfoFragment instance = null;
+
+    public static UserInfoFragment getInstance() {
+        return instance;
+    }
 
     private View mCurrView = null;
 
@@ -61,6 +70,9 @@ public class UserInfoFragment extends BaseFragment {
     private static final int REQUEST_CAMERA = 2;
     private static final int REQUEST_CROP = 3;
 
+    // 图片处理结果输出文件
+    private Uri mOutputUri = null;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,7 +90,15 @@ public class UserInfoFragment extends BaseFragment {
         initLayout();
         initUserInfo();
 
+        instance = this;
+
         return mCurrView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        instance = null;
     }
 
     private void initTopView()
@@ -195,17 +215,18 @@ public class UserInfoFragment extends BaseFragment {
             case REQUEST_GALLERY:
                 // 从相册选择中返回
                 Uri uri = data.getData();
-                cropImage(uri);
+                Bitmap gBitmap = ImageUtil.getBitmapFromUri(getActivity(), uri);
+                cropBitmap(gBitmap);
                 break;
             case REQUEST_CAMERA:
-                Bitmap bitmap = data.getParcelableExtra("data");
-                Uri capturedImageUri = saveAvatarBitmap(bitmap);
-                cropImage(capturedImageUri);
+                Bitmap cBitmap = data.getParcelableExtra("data");
+                cropBitmap(cBitmap);
                 break;
 
             case REQUEST_CROP:
                 // 从裁剪图片界面返回
-                Bitmap avatar = data.getParcelableExtra("data");
+                Uri avatar_uri = data.getData();
+                Bitmap avatar = ImageUtil.getBitmapFromUri(getActivity(), avatar_uri);
                 setAvatarImage(avatar);
                 break;
 
@@ -214,50 +235,24 @@ public class UserInfoFragment extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void cropImage(Uri imgUri)
-    {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(imgUri, "image/*");
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 160);
-        intent.putExtra("outputY", 160);
-        intent.putExtra("return-data", true);
 
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+    private void cropBitmap(Bitmap bitmap)
+    {
+        Uri sourceUri = ImageUtil.saveBitmapToUri(getActivity(), bitmap, "upload", "avatar.jpg");
+
+        Intent intent = new Intent(getContext(), CropImageActivity.class);
+        intent.setData(sourceUri);
 
         startActivityForResult(intent, REQUEST_CROP);
     }
 
-    //
-    private Uri saveAvatarBitmap(Bitmap bitmap)
-    {
-        File tempDir = new File(Environment.getExternalStorageDirectory() + "/com.tealcode.boxingspeed");
-        if(!tempDir.exists()) {
-            tempDir.mkdir();
-        }
-
-        File img = new File(tempDir.getAbsolutePath() + "avatar.png");
-        try {
-            FileOutputStream fos = new FileOutputStream(img);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fos);
-            fos.flush();
-            fos.close();
-            return Uri.fromFile(img);
-        } catch (Exception e) {
-            Log.e(TAG, "SaveAvatarBitmap Failed with exception: " + e.toString());
-            return null;
-        }
-    }
 
     private void setAvatarImage(Bitmap bitmap)
     {
         mPortrait.setImageBitmap(bitmap);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 60, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] bytes = stream.toByteArray();
         String img = new String(Base64.encodeToString(bytes, Base64.DEFAULT));
 

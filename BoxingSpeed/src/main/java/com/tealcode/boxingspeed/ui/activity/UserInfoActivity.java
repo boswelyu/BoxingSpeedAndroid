@@ -43,4 +43,5 @@ public class UserInfoActivity extends FragmentActivity {
         mProgressView.setVisibility(View.VISIBLE);
         mprogressText.setText(text);
     }
+
 }
