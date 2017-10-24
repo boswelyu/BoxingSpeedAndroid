@@ -51,7 +51,7 @@ public class ImageUtil {
         File imageFile = new File(tempDir.getAbsolutePath(), filename);
         try {
             FileOutputStream fos = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
             fos.close();
         } catch (Exception e) {

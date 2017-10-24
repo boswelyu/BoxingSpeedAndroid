@@ -1,20 +1,25 @@
 package com.tealcode.boxingspeed.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceActivity;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,10 +38,9 @@ import com.tealcode.boxingspeed.ui.widget.BaseImageView;
 import com.tealcode.boxingspeed.utility.ImageUtil;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 
 import cz.msebera.android.httpclient.Header;
+
 
 /**
  * Created by YuBo on 2017/9/29.
@@ -55,7 +59,7 @@ public class UserInfoFragment extends BaseFragment {
     private View mCurrView = null;
 
     private BaseImageView mPortrait;
-    private ImageButton mGenderImage;
+    private ImageView mGenderImage;
     private TextView mUsernameText;
     private TextView mNicknameText;
     private TableRow mPhoneNumberRow;
@@ -65,13 +69,15 @@ public class UserInfoFragment extends BaseFragment {
     private TextView mSignatureText;
     private Button   mCommandButton;
 
+    private InputMethodManager inputManager;
+
     // 定义请求代码
     private static final int REQUEST_GALLERY = 1;
     private static final int REQUEST_CAMERA = 2;
     private static final int REQUEST_CROP = 3;
 
-    // 图片处理结果输出文件
-    private Uri mOutputUri = null;
+    // 记录是否有信息的变化
+    private boolean hasChanged = false;
 
     @Nullable
     @Override
@@ -85,6 +91,8 @@ public class UserInfoFragment extends BaseFragment {
         } else {
             mCurrView = inflater.inflate(R.layout.fragment_userinfo, topContentView);
         }
+
+        inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         initTopView();
         initLayout();
@@ -121,7 +129,7 @@ public class UserInfoFragment extends BaseFragment {
     private void initLayout()
     {
         mPortrait = (BaseImageView) mCurrView.findViewById(R.id.userinfo_portrait);
-        mGenderImage = (ImageButton) mCurrView.findViewById(R.id.userinfo_gender);
+        mGenderImage = (ImageView) mCurrView.findViewById(R.id.userinfo_gender);
         mUsernameText = (TextView) mCurrView.findViewById(R.id.userinfo_nickname);
         mNicknameText = (TextView) mCurrView.findViewById(R.id.userinfo_nickname);
         mPhoneNumberRow = (TableRow) mCurrView.findViewById(R.id.userinfo_phone_row);
@@ -196,6 +204,14 @@ public class UserInfoFragment extends BaseFragment {
                 startActivityForResult(intent, REQUEST_GALLERY);
             }
         });
+
+        // Username不可修改
+        // Nickname不可修改
+
+        mPhoneNumberText.setInputType(InputType.TYPE_CLASS_PHONE);
+
+
+        hasChanged = false;
     }
 
     // 显示他人的信息
@@ -219,7 +235,8 @@ public class UserInfoFragment extends BaseFragment {
                 cropBitmap(gBitmap);
                 break;
             case REQUEST_CAMERA:
-                Bitmap cBitmap = data.getParcelableExtra("data");
+                Uri curi = data.getData();
+                Bitmap cBitmap = ImageUtil.getBitmapFromUri(getActivity(), curi);
                 cropBitmap(cBitmap);
                 break;
 
@@ -238,7 +255,7 @@ public class UserInfoFragment extends BaseFragment {
 
     private void cropBitmap(Bitmap bitmap)
     {
-        Uri sourceUri = ImageUtil.saveBitmapToUri(getActivity(), bitmap, "upload", "avatar.jpg");
+        Uri sourceUri = ImageUtil.saveBitmapToUri(getActivity(), bitmap, "upload", "avatar.png");
 
         Intent intent = new Intent(getContext(), CropImageActivity.class);
         intent.setData(sourceUri);
@@ -252,24 +269,24 @@ public class UserInfoFragment extends BaseFragment {
         mPortrait.setImageBitmap(bitmap);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] bytes = stream.toByteArray();
         String img = new String(Base64.encodeToString(bytes, Base64.DEFAULT));
 
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.add("type", "avatar");
-        params.add("user_id", Integer.toString(ProfilerManager.getUserId()));
-        params.add("image", img);
+        params.put("type", "avatar");
+        params.put("user_id", Integer.toString(ProfilerManager.getUserId()));
+//        params.put("image", img);
         client.post(AppConfig.UploadAvatarUrl, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Toast.makeText(getContext(), getString(R.string.upload_avatar_success), Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(getContext(), getString(R.string.upload_avatar_failed), Toast.LENGTH_SHORT).show();
+
             }
         });
 

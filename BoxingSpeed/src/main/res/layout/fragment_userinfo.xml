@@ -20,11 +20,11 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:layout_centerHorizontal="true"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:src="@drawable/default_user_portrait"
             />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/userinfo_gender"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -32,6 +32,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
+            android:scaleType="fitXY"
             android:gravity="center"
             android:background="@drawable/gender_female"
             />
@@ -86,6 +87,7 @@
                 android:layout_height="48dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
+                android:inputType="textPersonName"
                 android:text="Nickname"
                 android:textColor="@color/default_value_color"
                 android:textSize="16sp"
@@ -110,6 +112,7 @@
                 android:layout_height="48dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
+                android:inputType="textPhonetic"
                 android:text="18905327696"
                 android:textColor="@color/default_value_color"
                 android:textSize="16sp"
@@ -182,6 +185,7 @@
                 android:layout_height="100dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
+                android:inputType="text"
                 android:text=""
                 android:textColor="@color/default_value_color"
                 android:textSize="16sp"
