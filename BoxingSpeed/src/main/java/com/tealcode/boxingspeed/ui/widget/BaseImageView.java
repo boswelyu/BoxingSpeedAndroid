@@ -5,7 +5,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.tealcode.boxingspeed.R;
-import com.tealcode.boxingspeed.helper.HttpImageLoader;
+import com.tealcode.boxingspeed.helper.http.HttpImageLoader;
 
 /**
  * Created by YuBo on 2017/9/27.

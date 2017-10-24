@@ -1,4 +1,4 @@
-package com.tealcode.boxingspeed.helper;
+package com.tealcode.boxingspeed.helper.http;
 
 import android.content.Context;
 import android.util.Log;

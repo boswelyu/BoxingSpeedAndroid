@@ -3,14 +3,10 @@ package com.tealcode.boxingspeed.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceActivity;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,26 +14,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.Base64;
-import com.loopj.android.http.RequestParams;
 import com.tealcode.boxingspeed.R;
 import com.tealcode.boxingspeed.config.AppConfig;
 import com.tealcode.boxingspeed.helper.AppConstant;
+import com.tealcode.boxingspeed.helper.http.AsyncHttpReplyHandler;
+import com.tealcode.boxingspeed.helper.http.AsyncHttpWorker;
 import com.tealcode.boxingspeed.manager.ProfilerManager;
+import com.tealcode.boxingspeed.message.UploadReply;
+import com.tealcode.boxingspeed.message.UploadRequest;
 import com.tealcode.boxingspeed.protobuf.Server;
 import com.tealcode.boxingspeed.ui.activity.CropImageActivity;
 import com.tealcode.boxingspeed.ui.widget.BaseImageView;
 import com.tealcode.boxingspeed.utility.ImageUtil;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -268,28 +274,44 @@ public class UserInfoFragment extends BaseFragment {
     {
         mPortrait.setImageBitmap(bitmap);
 
+        uploadImageToServer(bitmap);
+    }
+
+    private void uploadImageToServer(Bitmap bitmap)
+    {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
         byte[] bytes = stream.toByteArray();
-        String img = new String(Base64.encodeToString(bytes, Base64.DEFAULT));
+        String imgStr = new String(Base64.encodeToString(bytes, Base64.DEFAULT));
 
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("type", "avatar");
-        params.put("user_id", Integer.toString(ProfilerManager.getUserId()));
-//        params.put("image", img);
-        client.post(AppConfig.UploadAvatarUrl, params, new AsyncHttpResponseHandler() {
+        String postStr = buildUploadAvatarStr(imgStr);
+
+        AsyncHttpWorker httpWorker = new AsyncHttpWorker();
+        httpWorker.post(AppConfig.UploadAvatarUrl, postStr, new AsyncHttpReplyHandler(){
+
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
+            public void onSuccess(String replyStr) {
+                Toast.makeText(getContext(), getString(R.string.upload_avatar_success), Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            public void onFailure(int statusCode, String errorInfo) {
 
+                String errorStr = getString(R.string.upload_avatar_failed) + " : " + errorInfo;
+
+                Toast.makeText(getContext(), errorStr, Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
 
+    private String buildUploadAvatarStr(String imgStr)
+    {
+        UploadRequest request = new UploadRequest();
+        request.setUserId(ProfilerManager.getUserId());
+        request.setType("avatar");
+        request.setImage(imgStr);
+
+        return JSON.toJSONString(request);
     }
 }

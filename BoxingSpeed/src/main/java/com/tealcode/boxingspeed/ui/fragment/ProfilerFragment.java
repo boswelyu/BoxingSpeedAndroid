@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tealcode.boxingspeed.R;
-import com.tealcode.boxingspeed.helper.HttpImageLoader;
+import com.tealcode.boxingspeed.helper.http.HttpImageLoader;
 import com.tealcode.boxingspeed.manager.ActivityManager;
 import com.tealcode.boxingspeed.manager.LoginManager;
 import com.tealcode.boxingspeed.manager.ProfilerManager;

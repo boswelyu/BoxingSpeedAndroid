@@ -4,29 +4,12 @@ package com.tealcode.boxingspeed.message;
  * Created by YuBo on 2017/9/22.
  */
 
-public class LoginReply {
-    private int  status;
-    private String errorInfo;
+public class LoginReply extends BasicHttpReply{
+
     private String  userId;
     private String  serverIp;
     private int     serverPort;
     private String  sessionKey;
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getErrorInfo() {
-        return errorInfo;
-    }
-
-    public void setErrorInfo(String errorInfo) {
-        this.errorInfo = errorInfo;
-    }
 
     public String getUserId() {
         return userId;
