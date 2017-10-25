@@ -10,6 +10,8 @@ import com.tealcode.boxingspeed.config.AppConfig;
 import com.tealcode.boxingspeed.handler.IConnectHandler;
 import com.tealcode.boxingspeed.handler.IRegisterReplyHandler;
 import com.tealcode.boxingspeed.helper.GateKeeper;
+import com.tealcode.boxingspeed.helper.http.AsyncHttpReplyHandler;
+import com.tealcode.boxingspeed.helper.http.AsyncHttpWorker;
 import com.tealcode.boxingspeed.message.LoginReply;
 import com.tealcode.boxingspeed.message.LoginRequest;
 import com.tealcode.boxingspeed.message.RegisterRequest;
@@ -82,6 +84,8 @@ public class LoginManager extends Handler implements IConnectHandler {
                 try {
                     url = new URL(AppConfig.LoginUrl);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setConnectTimeout(2000);
+                    urlConnection.setReadTimeout(3000);
                     urlConnection.setRequestMethod("POST");
 
                     urlConnection.setDoInput(true);
@@ -123,7 +127,8 @@ public class LoginManager extends Handler implements IConnectHandler {
                 }catch(IOException ioe) {
                     HandleLoginSocketError(SocketEvent.ADDRESS_CONNECT_FAILED);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Failed to connect to server");
+                    HandleLoginSocketError(SocketEvent.ADDRESS_CONNECT_FAILED);
                 }
 
                 return retstatus;
@@ -152,67 +157,53 @@ public class LoginManager extends Handler implements IConnectHandler {
             registerTask.cancel(true);
         }
 
-        registerTask = new AsyncTask<Void, Void, Integer>() {
-
+        String postStr = BuildRegisterPostStr(username, password);
+        AsyncHttpWorker httpWorker = new AsyncHttpWorker();
+        httpWorker.post(AppConfig.RegisterUrl, postStr, new AsyncHttpReplyHandler() {
             @Override
-            protected Integer doInBackground(Void... params) {
-                URL url = null;
-                int retstatus = 0;
-                try {
-                    url = new URL(AppConfig.RegisterUrl);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("POST");
+            public void onSuccess(String replyStr) {
+                LoginReply reply = JSON.parseObject(replyStr, LoginReply.class);
 
-                    urlConnection.setDoInput(true);
-                    urlConnection.setDoOutput(true);
+                boolean hasError = false;
 
-                    PrintWriter printWriter = new PrintWriter(urlConnection.getOutputStream());
-                    printWriter.write(BuildRegisterPostStr(username, password));
-                    printWriter.flush();
-
-                    // Read login response
-                    BufferedInputStream bis = new BufferedInputStream(urlConnection.getInputStream());
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-                    int len;
-                    byte[] buffer = new byte[1024];
-                    while((len = bis.read(buffer)) != -1)
+                if(reply != null && reply.getStatus() == 0) {
+                    SaveLoginReplyData(reply);
+                    if(AES.init(reply.getSessionKey()) != 0)
                     {
-                        bos.write(buffer, 0, len);
-                        bos.flush();
+                        errorInfo = "Init AES Failed";
+                        hasError = true;
                     }
-                    bos.close();
 
-                    String reply = bos.toString("utf-8");
-                    retstatus = HandleRegisterResult(reply);
-
-
-                }catch(MalformedURLException urle) {
-                    Log.e(TAG, "LoginURL Malformed");
-                    HandleLoginSocketError(SocketEvent.ADDRESS_INVALID);
-                }catch(IOException ioe) {
-                    HandleLoginSocketError(SocketEvent.ADDRESS_CONNECT_FAILED);
+                    if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) != 0) {
+                        errorInfo = "Internal Error: Init NetworkManager Failed";
+                        hasError = true;
+                    }
+                } else {
+                    errorInfo = "Internal Error: Reply empty";
+                    hasError = true;
                 }
 
-                return retstatus;
-            }
-
-            @Override
-            protected void onPostExecute(Integer status) {
-                int retstatus = status.intValue();
-                if(retstatus == 0) {
-                    // Login Success
+                if(!hasError) {
                     if(mRegisterReplyHandler != null) {
                         mRegisterReplyHandler.onRegisterSuccess();
                     }
-                }else {
+                }
+                else {
                     if(mRegisterReplyHandler != null) {
-                        mRegisterReplyHandler.onRegisterFailure(retstatus, errorInfo);
+                        mRegisterReplyHandler.onRegisterFailure(-1, errorInfo);
                     }
                 }
             }
 
-        }.execute();
+            @Override
+            public void onFailure(int statusCode, String errorInfo) {
+                if(mRegisterReplyHandler != null) {
+                    mRegisterReplyHandler.onRegisterFailure(statusCode, errorInfo);
+                }
+            }
+        });
+
+
     }
 
     public void phoneRegister(String phonenum, String passcode)
@@ -276,35 +267,6 @@ public class LoginManager extends Handler implements IConnectHandler {
         }else {
             return "Null Reply";
         }
-    }
-
-    private int HandleRegisterResult(String registerResponse)
-    {
-        LoginReply reply = JSON.parseObject(registerResponse, LoginReply.class);
-        if(reply != null && reply.getStatus() == 0) {
-            SaveLoginReplyData(reply);
-            if(AES.init(reply.getSessionKey()) != 0)
-            {
-                errorInfo = "Init AES Failed";
-                return -1;
-            }
-
-            if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) != 0) {
-                errorInfo = "Internal Error: Init NetworkManager Failed";
-                return -1;
-            }
-
-
-            return 0;
-        }
-
-        if(reply != null) {
-            errorInfo = reply.getErrorInfo();
-            return reply.getStatus();
-        }
-        // TODO: Error Code
-        errorInfo = "Unexpected Error: Empty Reply";
-        return -2;
     }
 
     private String getLoginResult(Common.RESULT result)

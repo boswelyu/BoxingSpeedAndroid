@@ -2201,56 +2201,76 @@ public final class Server {
     int getUserId();
 
     /**
-     * <code>sint32 gender = 2;</code>
-     */
-    int getGender();
-
-    /**
-     * <code>sint32 age = 3;</code>
-     */
-    int getAge();
-
-    /**
-     * <code>sint32 level = 4;</code>
-     */
-    int getLevel();
-
-    /**
-     * <code>string username = 5;</code>
+     * <code>string username = 2;</code>
      */
     java.lang.String getUsername();
     /**
-     * <code>string username = 5;</code>
+     * <code>string username = 2;</code>
      */
     com.google.protobuf.ByteString
         getUsernameBytes();
 
     /**
-     * <code>string nickname = 6;</code>
+     * <code>string nickname = 3;</code>
      */
     java.lang.String getNickname();
     /**
-     * <code>string nickname = 6;</code>
+     * <code>string nickname = 3;</code>
      */
     com.google.protobuf.ByteString
         getNicknameBytes();
 
     /**
-     * <code>string signature = 7;</code>
+     * <code>sint32 gender = 4;</code>
+     */
+    int getGender();
+
+    /**
+     * <code>string phoneNum = 5;</code>
+     */
+    java.lang.String getPhoneNum();
+    /**
+     * <code>string phoneNum = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getPhoneNumBytes();
+
+    /**
+     * <code>string birthDate = 6;</code>
+     */
+    java.lang.String getBirthDate();
+    /**
+     * <code>string birthDate = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getBirthDateBytes();
+
+    /**
+     * <code>string location = 7;</code>
+     */
+    java.lang.String getLocation();
+    /**
+     * <code>string location = 7;</code>
+     */
+    com.google.protobuf.ByteString
+        getLocationBytes();
+
+    /**
+     * <code>string signature = 8;</code>
      */
     java.lang.String getSignature();
     /**
-     * <code>string signature = 7;</code>
+     * <code>string signature = 8;</code>
      */
     com.google.protobuf.ByteString
         getSignatureBytes();
 
     /**
-     * <code>string avatarUrl = 8;</code>
+     * <code>string avatarUrl = 9;</code>
      */
     java.lang.String getAvatarUrl();
     /**
-     * <code>string avatarUrl = 8;</code>
+     * <code>string avatarUrl = 9;</code>
      */
     com.google.protobuf.ByteString
         getAvatarUrlBytes();
@@ -2269,11 +2289,12 @@ public final class Server {
     }
     private UserProfile() {
       userId_ = 0;
-      gender_ = 0;
-      age_ = 0;
-      level_ = 0;
       username_ = "";
       nickname_ = "";
+      gender_ = 0;
+      phoneNum_ = "";
+      birthDate_ = "";
+      location_ = "";
       signature_ = "";
       avatarUrl_ = "";
     }
@@ -2311,40 +2332,48 @@ public final class Server {
               userId_ = input.readSInt32();
               break;
             }
-            case 16: {
-
-              gender_ = input.readSInt32();
-              break;
-            }
-            case 24: {
-
-              age_ = input.readSInt32();
-              break;
-            }
-            case 32: {
-
-              level_ = input.readSInt32();
-              break;
-            }
-            case 42: {
+            case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
               username_ = s;
               break;
             }
-            case 50: {
+            case 26: {
               java.lang.String s = input.readStringRequireUtf8();
 
               nickname_ = s;
               break;
             }
+            case 32: {
+
+              gender_ = input.readSInt32();
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              phoneNum_ = s;
+              break;
+            }
+            case 50: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              birthDate_ = s;
+              break;
+            }
             case 58: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              location_ = s;
+              break;
+            }
+            case 66: {
               java.lang.String s = input.readStringRequireUtf8();
 
               signature_ = s;
               break;
             }
-            case 66: {
+            case 74: {
               java.lang.String s = input.readStringRequireUtf8();
 
               avatarUrl_ = s;
@@ -2383,37 +2412,10 @@ public final class Server {
       return userId_;
     }
 
-    public static final int GENDER_FIELD_NUMBER = 2;
-    private int gender_;
-    /**
-     * <code>sint32 gender = 2;</code>
-     */
-    public int getGender() {
-      return gender_;
-    }
-
-    public static final int AGE_FIELD_NUMBER = 3;
-    private int age_;
-    /**
-     * <code>sint32 age = 3;</code>
-     */
-    public int getAge() {
-      return age_;
-    }
-
-    public static final int LEVEL_FIELD_NUMBER = 4;
-    private int level_;
-    /**
-     * <code>sint32 level = 4;</code>
-     */
-    public int getLevel() {
-      return level_;
-    }
-
-    public static final int USERNAME_FIELD_NUMBER = 5;
+    public static final int USERNAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object username_;
     /**
-     * <code>string username = 5;</code>
+     * <code>string username = 2;</code>
      */
     public java.lang.String getUsername() {
       java.lang.Object ref = username_;
@@ -2428,7 +2430,7 @@ public final class Server {
       }
     }
     /**
-     * <code>string username = 5;</code>
+     * <code>string username = 2;</code>
      */
     public com.google.protobuf.ByteString
         getUsernameBytes() {
@@ -2444,10 +2446,10 @@ public final class Server {
       }
     }
 
-    public static final int NICKNAME_FIELD_NUMBER = 6;
+    public static final int NICKNAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object nickname_;
     /**
-     * <code>string nickname = 6;</code>
+     * <code>string nickname = 3;</code>
      */
     public java.lang.String getNickname() {
       java.lang.Object ref = nickname_;
@@ -2462,7 +2464,7 @@ public final class Server {
       }
     }
     /**
-     * <code>string nickname = 6;</code>
+     * <code>string nickname = 3;</code>
      */
     public com.google.protobuf.ByteString
         getNicknameBytes() {
@@ -2478,10 +2480,121 @@ public final class Server {
       }
     }
 
-    public static final int SIGNATURE_FIELD_NUMBER = 7;
+    public static final int GENDER_FIELD_NUMBER = 4;
+    private int gender_;
+    /**
+     * <code>sint32 gender = 4;</code>
+     */
+    public int getGender() {
+      return gender_;
+    }
+
+    public static final int PHONENUM_FIELD_NUMBER = 5;
+    private volatile java.lang.Object phoneNum_;
+    /**
+     * <code>string phoneNum = 5;</code>
+     */
+    public java.lang.String getPhoneNum() {
+      java.lang.Object ref = phoneNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        phoneNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string phoneNum = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPhoneNumBytes() {
+      java.lang.Object ref = phoneNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        phoneNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BIRTHDATE_FIELD_NUMBER = 6;
+    private volatile java.lang.Object birthDate_;
+    /**
+     * <code>string birthDate = 6;</code>
+     */
+    public java.lang.String getBirthDate() {
+      java.lang.Object ref = birthDate_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        birthDate_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string birthDate = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getBirthDateBytes() {
+      java.lang.Object ref = birthDate_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        birthDate_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LOCATION_FIELD_NUMBER = 7;
+    private volatile java.lang.Object location_;
+    /**
+     * <code>string location = 7;</code>
+     */
+    public java.lang.String getLocation() {
+      java.lang.Object ref = location_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        location_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string location = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+        getLocationBytes() {
+      java.lang.Object ref = location_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        location_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SIGNATURE_FIELD_NUMBER = 8;
     private volatile java.lang.Object signature_;
     /**
-     * <code>string signature = 7;</code>
+     * <code>string signature = 8;</code>
      */
     public java.lang.String getSignature() {
       java.lang.Object ref = signature_;
@@ -2496,7 +2609,7 @@ public final class Server {
       }
     }
     /**
-     * <code>string signature = 7;</code>
+     * <code>string signature = 8;</code>
      */
     public com.google.protobuf.ByteString
         getSignatureBytes() {
@@ -2512,10 +2625,10 @@ public final class Server {
       }
     }
 
-    public static final int AVATARURL_FIELD_NUMBER = 8;
+    public static final int AVATARURL_FIELD_NUMBER = 9;
     private volatile java.lang.Object avatarUrl_;
     /**
-     * <code>string avatarUrl = 8;</code>
+     * <code>string avatarUrl = 9;</code>
      */
     public java.lang.String getAvatarUrl() {
       java.lang.Object ref = avatarUrl_;
@@ -2530,7 +2643,7 @@ public final class Server {
       }
     }
     /**
-     * <code>string avatarUrl = 8;</code>
+     * <code>string avatarUrl = 9;</code>
      */
     public com.google.protobuf.ByteString
         getAvatarUrlBytes() {
@@ -2561,26 +2674,29 @@ public final class Server {
       if (userId_ != 0) {
         output.writeSInt32(1, userId_);
       }
-      if (gender_ != 0) {
-        output.writeSInt32(2, gender_);
-      }
-      if (age_ != 0) {
-        output.writeSInt32(3, age_);
-      }
-      if (level_ != 0) {
-        output.writeSInt32(4, level_);
-      }
       if (!getUsernameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, username_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, username_);
       }
       if (!getNicknameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, nickname_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, nickname_);
+      }
+      if (gender_ != 0) {
+        output.writeSInt32(4, gender_);
+      }
+      if (!getPhoneNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, phoneNum_);
+      }
+      if (!getBirthDateBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, birthDate_);
+      }
+      if (!getLocationBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, location_);
       }
       if (!getSignatureBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, signature_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, signature_);
       }
       if (!getAvatarUrlBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, avatarUrl_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, avatarUrl_);
       }
       unknownFields.writeTo(output);
     }
@@ -2594,29 +2710,30 @@ public final class Server {
         size += com.google.protobuf.CodedOutputStream
           .computeSInt32Size(1, userId_);
       }
-      if (gender_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(2, gender_);
-      }
-      if (age_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(3, age_);
-      }
-      if (level_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeSInt32Size(4, level_);
-      }
       if (!getUsernameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, username_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, username_);
       }
       if (!getNicknameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, nickname_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, nickname_);
+      }
+      if (gender_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeSInt32Size(4, gender_);
+      }
+      if (!getPhoneNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, phoneNum_);
+      }
+      if (!getBirthDateBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, birthDate_);
+      }
+      if (!getLocationBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, location_);
       }
       if (!getSignatureBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, signature_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, signature_);
       }
       if (!getAvatarUrlBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, avatarUrl_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, avatarUrl_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2636,16 +2753,18 @@ public final class Server {
       boolean result = true;
       result = result && (getUserId()
           == other.getUserId());
-      result = result && (getGender()
-          == other.getGender());
-      result = result && (getAge()
-          == other.getAge());
-      result = result && (getLevel()
-          == other.getLevel());
       result = result && getUsername()
           .equals(other.getUsername());
       result = result && getNickname()
           .equals(other.getNickname());
+      result = result && (getGender()
+          == other.getGender());
+      result = result && getPhoneNum()
+          .equals(other.getPhoneNum());
+      result = result && getBirthDate()
+          .equals(other.getBirthDate());
+      result = result && getLocation()
+          .equals(other.getLocation());
       result = result && getSignature()
           .equals(other.getSignature());
       result = result && getAvatarUrl()
@@ -2663,16 +2782,18 @@ public final class Server {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + USERID_FIELD_NUMBER;
       hash = (53 * hash) + getUserId();
-      hash = (37 * hash) + GENDER_FIELD_NUMBER;
-      hash = (53 * hash) + getGender();
-      hash = (37 * hash) + AGE_FIELD_NUMBER;
-      hash = (53 * hash) + getAge();
-      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
-      hash = (53 * hash) + getLevel();
       hash = (37 * hash) + USERNAME_FIELD_NUMBER;
       hash = (53 * hash) + getUsername().hashCode();
       hash = (37 * hash) + NICKNAME_FIELD_NUMBER;
       hash = (53 * hash) + getNickname().hashCode();
+      hash = (37 * hash) + GENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getGender();
+      hash = (37 * hash) + PHONENUM_FIELD_NUMBER;
+      hash = (53 * hash) + getPhoneNum().hashCode();
+      hash = (37 * hash) + BIRTHDATE_FIELD_NUMBER;
+      hash = (53 * hash) + getBirthDate().hashCode();
+      hash = (37 * hash) + LOCATION_FIELD_NUMBER;
+      hash = (53 * hash) + getLocation().hashCode();
       hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
       hash = (53 * hash) + getSignature().hashCode();
       hash = (37 * hash) + AVATARURL_FIELD_NUMBER;
@@ -2808,15 +2929,17 @@ public final class Server {
         super.clear();
         userId_ = 0;
 
-        gender_ = 0;
-
-        age_ = 0;
-
-        level_ = 0;
-
         username_ = "";
 
         nickname_ = "";
+
+        gender_ = 0;
+
+        phoneNum_ = "";
+
+        birthDate_ = "";
+
+        location_ = "";
 
         signature_ = "";
 
@@ -2845,11 +2968,12 @@ public final class Server {
       public com.tealcode.boxingspeed.protobuf.Server.UserProfile buildPartial() {
         com.tealcode.boxingspeed.protobuf.Server.UserProfile result = new com.tealcode.boxingspeed.protobuf.Server.UserProfile(this);
         result.userId_ = userId_;
-        result.gender_ = gender_;
-        result.age_ = age_;
-        result.level_ = level_;
         result.username_ = username_;
         result.nickname_ = nickname_;
+        result.gender_ = gender_;
+        result.phoneNum_ = phoneNum_;
+        result.birthDate_ = birthDate_;
+        result.location_ = location_;
         result.signature_ = signature_;
         result.avatarUrl_ = avatarUrl_;
         onBuilt();
@@ -2896,21 +3020,27 @@ public final class Server {
         if (other.getUserId() != 0) {
           setUserId(other.getUserId());
         }
-        if (other.getGender() != 0) {
-          setGender(other.getGender());
-        }
-        if (other.getAge() != 0) {
-          setAge(other.getAge());
-        }
-        if (other.getLevel() != 0) {
-          setLevel(other.getLevel());
-        }
         if (!other.getUsername().isEmpty()) {
           username_ = other.username_;
           onChanged();
         }
         if (!other.getNickname().isEmpty()) {
           nickname_ = other.nickname_;
+          onChanged();
+        }
+        if (other.getGender() != 0) {
+          setGender(other.getGender());
+        }
+        if (!other.getPhoneNum().isEmpty()) {
+          phoneNum_ = other.phoneNum_;
+          onChanged();
+        }
+        if (!other.getBirthDate().isEmpty()) {
+          birthDate_ = other.birthDate_;
+          onChanged();
+        }
+        if (!other.getLocation().isEmpty()) {
+          location_ = other.location_;
           onChanged();
         }
         if (!other.getSignature().isEmpty()) {
@@ -2974,87 +3104,9 @@ public final class Server {
         return this;
       }
 
-      private int gender_ ;
-      /**
-       * <code>sint32 gender = 2;</code>
-       */
-      public int getGender() {
-        return gender_;
-      }
-      /**
-       * <code>sint32 gender = 2;</code>
-       */
-      public Builder setGender(int value) {
-        
-        gender_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>sint32 gender = 2;</code>
-       */
-      public Builder clearGender() {
-        
-        gender_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int age_ ;
-      /**
-       * <code>sint32 age = 3;</code>
-       */
-      public int getAge() {
-        return age_;
-      }
-      /**
-       * <code>sint32 age = 3;</code>
-       */
-      public Builder setAge(int value) {
-        
-        age_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>sint32 age = 3;</code>
-       */
-      public Builder clearAge() {
-        
-        age_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int level_ ;
-      /**
-       * <code>sint32 level = 4;</code>
-       */
-      public int getLevel() {
-        return level_;
-      }
-      /**
-       * <code>sint32 level = 4;</code>
-       */
-      public Builder setLevel(int value) {
-        
-        level_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>sint32 level = 4;</code>
-       */
-      public Builder clearLevel() {
-        
-        level_ = 0;
-        onChanged();
-        return this;
-      }
-
       private java.lang.Object username_ = "";
       /**
-       * <code>string username = 5;</code>
+       * <code>string username = 2;</code>
        */
       public java.lang.String getUsername() {
         java.lang.Object ref = username_;
@@ -3069,7 +3121,7 @@ public final class Server {
         }
       }
       /**
-       * <code>string username = 5;</code>
+       * <code>string username = 2;</code>
        */
       public com.google.protobuf.ByteString
           getUsernameBytes() {
@@ -3085,7 +3137,7 @@ public final class Server {
         }
       }
       /**
-       * <code>string username = 5;</code>
+       * <code>string username = 2;</code>
        */
       public Builder setUsername(
           java.lang.String value) {
@@ -3098,7 +3150,7 @@ public final class Server {
         return this;
       }
       /**
-       * <code>string username = 5;</code>
+       * <code>string username = 2;</code>
        */
       public Builder clearUsername() {
         
@@ -3107,7 +3159,7 @@ public final class Server {
         return this;
       }
       /**
-       * <code>string username = 5;</code>
+       * <code>string username = 2;</code>
        */
       public Builder setUsernameBytes(
           com.google.protobuf.ByteString value) {
@@ -3123,7 +3175,7 @@ public final class Server {
 
       private java.lang.Object nickname_ = "";
       /**
-       * <code>string nickname = 6;</code>
+       * <code>string nickname = 3;</code>
        */
       public java.lang.String getNickname() {
         java.lang.Object ref = nickname_;
@@ -3138,7 +3190,7 @@ public final class Server {
         }
       }
       /**
-       * <code>string nickname = 6;</code>
+       * <code>string nickname = 3;</code>
        */
       public com.google.protobuf.ByteString
           getNicknameBytes() {
@@ -3154,7 +3206,7 @@ public final class Server {
         }
       }
       /**
-       * <code>string nickname = 6;</code>
+       * <code>string nickname = 3;</code>
        */
       public Builder setNickname(
           java.lang.String value) {
@@ -3167,7 +3219,7 @@ public final class Server {
         return this;
       }
       /**
-       * <code>string nickname = 6;</code>
+       * <code>string nickname = 3;</code>
        */
       public Builder clearNickname() {
         
@@ -3176,7 +3228,7 @@ public final class Server {
         return this;
       }
       /**
-       * <code>string nickname = 6;</code>
+       * <code>string nickname = 3;</code>
        */
       public Builder setNicknameBytes(
           com.google.protobuf.ByteString value) {
@@ -3190,9 +3242,242 @@ public final class Server {
         return this;
       }
 
+      private int gender_ ;
+      /**
+       * <code>sint32 gender = 4;</code>
+       */
+      public int getGender() {
+        return gender_;
+      }
+      /**
+       * <code>sint32 gender = 4;</code>
+       */
+      public Builder setGender(int value) {
+        
+        gender_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>sint32 gender = 4;</code>
+       */
+      public Builder clearGender() {
+        
+        gender_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object phoneNum_ = "";
+      /**
+       * <code>string phoneNum = 5;</code>
+       */
+      public java.lang.String getPhoneNum() {
+        java.lang.Object ref = phoneNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          phoneNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string phoneNum = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPhoneNumBytes() {
+        java.lang.Object ref = phoneNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          phoneNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string phoneNum = 5;</code>
+       */
+      public Builder setPhoneNum(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        phoneNum_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string phoneNum = 5;</code>
+       */
+      public Builder clearPhoneNum() {
+        
+        phoneNum_ = getDefaultInstance().getPhoneNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string phoneNum = 5;</code>
+       */
+      public Builder setPhoneNumBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        phoneNum_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object birthDate_ = "";
+      /**
+       * <code>string birthDate = 6;</code>
+       */
+      public java.lang.String getBirthDate() {
+        java.lang.Object ref = birthDate_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          birthDate_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string birthDate = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getBirthDateBytes() {
+        java.lang.Object ref = birthDate_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          birthDate_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string birthDate = 6;</code>
+       */
+      public Builder setBirthDate(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        birthDate_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string birthDate = 6;</code>
+       */
+      public Builder clearBirthDate() {
+        
+        birthDate_ = getDefaultInstance().getBirthDate();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string birthDate = 6;</code>
+       */
+      public Builder setBirthDateBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        birthDate_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object location_ = "";
+      /**
+       * <code>string location = 7;</code>
+       */
+      public java.lang.String getLocation() {
+        java.lang.Object ref = location_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          location_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string location = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+          getLocationBytes() {
+        java.lang.Object ref = location_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          location_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string location = 7;</code>
+       */
+      public Builder setLocation(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        location_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string location = 7;</code>
+       */
+      public Builder clearLocation() {
+        
+        location_ = getDefaultInstance().getLocation();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string location = 7;</code>
+       */
+      public Builder setLocationBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        location_ = value;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object signature_ = "";
       /**
-       * <code>string signature = 7;</code>
+       * <code>string signature = 8;</code>
        */
       public java.lang.String getSignature() {
         java.lang.Object ref = signature_;
@@ -3207,7 +3492,7 @@ public final class Server {
         }
       }
       /**
-       * <code>string signature = 7;</code>
+       * <code>string signature = 8;</code>
        */
       public com.google.protobuf.ByteString
           getSignatureBytes() {
@@ -3223,7 +3508,7 @@ public final class Server {
         }
       }
       /**
-       * <code>string signature = 7;</code>
+       * <code>string signature = 8;</code>
        */
       public Builder setSignature(
           java.lang.String value) {
@@ -3236,7 +3521,7 @@ public final class Server {
         return this;
       }
       /**
-       * <code>string signature = 7;</code>
+       * <code>string signature = 8;</code>
        */
       public Builder clearSignature() {
         
@@ -3245,7 +3530,7 @@ public final class Server {
         return this;
       }
       /**
-       * <code>string signature = 7;</code>
+       * <code>string signature = 8;</code>
        */
       public Builder setSignatureBytes(
           com.google.protobuf.ByteString value) {
@@ -3261,7 +3546,7 @@ public final class Server {
 
       private java.lang.Object avatarUrl_ = "";
       /**
-       * <code>string avatarUrl = 8;</code>
+       * <code>string avatarUrl = 9;</code>
        */
       public java.lang.String getAvatarUrl() {
         java.lang.Object ref = avatarUrl_;
@@ -3276,7 +3561,7 @@ public final class Server {
         }
       }
       /**
-       * <code>string avatarUrl = 8;</code>
+       * <code>string avatarUrl = 9;</code>
        */
       public com.google.protobuf.ByteString
           getAvatarUrlBytes() {
@@ -3292,7 +3577,7 @@ public final class Server {
         }
       }
       /**
-       * <code>string avatarUrl = 8;</code>
+       * <code>string avatarUrl = 9;</code>
        */
       public Builder setAvatarUrl(
           java.lang.String value) {
@@ -3305,7 +3590,7 @@ public final class Server {
         return this;
       }
       /**
-       * <code>string avatarUrl = 8;</code>
+       * <code>string avatarUrl = 9;</code>
        */
       public Builder clearAvatarUrl() {
         
@@ -3314,7 +3599,7 @@ public final class Server {
         return this;
       }
       /**
-       * <code>string avatarUrl = 8;</code>
+       * <code>string avatarUrl = 9;</code>
        */
       public Builder setAvatarUrlBytes(
           com.google.protobuf.ByteString value) {
@@ -3412,12 +3697,13 @@ public final class Server {
       "ification\022\022\n\nnewFriends\030\001 \001(\021\022\022\n\nnewMess" +
       "age\030\002 \001(\021\022\023\n\013newFunction\030\003 \001(\021\"R\n\nLoginR" +
       "eply\022\036\n\006result\030\001 \001(\0162\016.Common.RESULT\022$\n\007" +
-      "profile\030\002 \001(\0132\023.Server.UserProfile\"\223\001\n\013U" +
-      "serProfile\022\016\n\006userId\030\001 \001(\021\022\016\n\006gender\030\002 \001" +
-      "(\021\022\013\n\003age\030\003 \001(\021\022\r\n\005level\030\004 \001(\021\022\020\n\010userna",
-      "me\030\005 \001(\t\022\020\n\010nickname\030\006 \001(\t\022\021\n\tsignature\030" +
-      "\007 \001(\t\022\021\n\tavatarUrl\030\010 \001(\tB+\n!com.tealcode" +
-      ".boxingspeed.protobufB\006Serverb\006proto3"
+      "profile\030\002 \001(\0132\023.Server.UserProfile\"\256\001\n\013U" +
+      "serProfile\022\016\n\006userId\030\001 \001(\021\022\020\n\010username\030\002" +
+      " \001(\t\022\020\n\010nickname\030\003 \001(\t\022\016\n\006gender\030\004 \001(\021\022\020",
+      "\n\010phoneNum\030\005 \001(\t\022\021\n\tbirthDate\030\006 \001(\t\022\020\n\010l" +
+      "ocation\030\007 \001(\t\022\021\n\tsignature\030\010 \001(\t\022\021\n\tavat" +
+      "arUrl\030\t \001(\tB+\n!com.tealcode.boxingspeed." +
+      "protobufB\006Serverb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3455,7 +3741,7 @@ public final class Server {
     internal_static_Server_UserProfile_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Server_UserProfile_descriptor,
-        new java.lang.String[] { "UserId", "Gender", "Age", "Level", "Username", "Nickname", "Signature", "AvatarUrl", });
+        new java.lang.String[] { "UserId", "Username", "Nickname", "Gender", "PhoneNum", "BirthDate", "Location", "Signature", "AvatarUrl", });
     com.tealcode.boxingspeed.protobuf.Common.getDescriptor();
   }
 

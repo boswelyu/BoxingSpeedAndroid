@@ -60,6 +60,7 @@
                 android:layout_marginLeft="8dp"
                 />
             <TextView
+                android:id="@+id/userinfo_username"
                 android:layout_height="48dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
@@ -107,13 +108,15 @@
                 android:textSize="16sp"
                 android:layout_marginLeft="8dp"
                 />
-            <TextView
+            <EditText
                 android:id="@+id/userinfo_phone_number"
                 android:layout_height="48dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
+                android:background="@null"
+                android:hint="@string/bind_one_phone"
                 android:inputType="textPhonetic"
-                android:text="18905327696"
+                android:text=""
                 android:textColor="@color/default_value_color"
                 android:textSize="16sp"
                 />
@@ -137,6 +140,7 @@
                 android:layout_height="48dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
+                android:hint="@string/edit_birth_date"
                 android:text="24"
                 android:textColor="@color/default_value_color"
                 android:textSize="16sp"
@@ -161,7 +165,8 @@
                 android:layout_height="48dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
-                android:text="shanghai"
+                android:hint="@string/edit_location_info"
+                android:text=""
                 android:textColor="@color/default_value_color"
                 android:textSize="16sp"
                 />
@@ -180,12 +185,14 @@
                 android:textSize="16sp"
                 android:layout_marginLeft="8dp"
                 />
-            <TextView
+            <EditText
                 android:id="@+id/userinfo_signature"
                 android:layout_height="100dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="left|center_vertical"
                 android:inputType="text"
+                android:background="@null"
+                android:hint="@string/edit_signature"
                 android:text=""
                 android:textColor="@color/default_value_color"
                 android:textSize="16sp"

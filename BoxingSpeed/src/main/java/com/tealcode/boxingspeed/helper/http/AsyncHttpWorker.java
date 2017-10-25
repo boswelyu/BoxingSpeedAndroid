@@ -43,6 +43,8 @@ public class AsyncHttpWorker {
                     URL url;
                     url = new URL(urlStr);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setConnectTimeout(2000);
+                    urlConnection.setReadTimeout(2000);
                     urlConnection.setRequestMethod("POST");
 
                     urlConnection.setDoInput(true);

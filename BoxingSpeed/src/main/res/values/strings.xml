@@ -67,15 +67,19 @@
     <string name="detail_username">注册名</string>
     <string name="detail_nickname">昵称</string>
     <string name="detail_bind_phone">绑定手机</string>
+    <string name="bind_one_phone">点击设置绑定手机</string>
     <string name="detail_gender">性别</string>
     <string name="detail_birth">出生日期</string>
+    <string name="edit_birth_date">点击修改出生日期</string>
     <string name="detail_location">所在地区</string>
+    <string name="edit_location_info">告诉大家你所在的城市吧</string>
     <string name="detail_signature">个性签名</string>
+    <string name="edit_signature">我就是我，独一无二(点击修改)</string>
+    <string name="save_profile_change">保存修改</string>
     <string name="saving_profile">正在保存修改</string>
     <string name="crop_head_image">头像裁剪</string>
     <string name="upload_avatar_success">上传头像成功</string>
     <string name="upload_avatar_failed">上传头像失败</string>
-
 
 
     <!-- 网络对战界面 -->

@@ -29,6 +29,7 @@ public class BaseFragment extends Fragment {
     protected TextView  topRightText;
 
     protected RelativeLayout topLeftContainer;
+    protected RelativeLayout topRightContainer;
 
     protected ProgressBar progressBar;
 
@@ -51,6 +52,7 @@ public class BaseFragment extends Fragment {
         topRightText.setVisibility(View.GONE);
 
         topLeftContainer = (RelativeLayout) topContentView.findViewById(R.id.top_left_container);
+        topRightContainer = (RelativeLayout) topContentView.findViewById(R.id.top_right_container);
     }
 
     @Nullable

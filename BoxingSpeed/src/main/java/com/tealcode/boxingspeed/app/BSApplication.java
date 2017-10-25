@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.mob.MobSDK;
 import com.tealcode.boxingspeed.helper.GateKeeper;
 import com.tealcode.boxingspeed.helper.http.HttpImageLoader;
 import com.tealcode.boxingspeed.helper.LocalStorage;
@@ -24,5 +25,7 @@ public class BSApplication extends Application {
         HttpImageLoader.InitConfig(appContext);
 
         GateKeeper.init();
+
+        MobSDK.init(getApplicationContext(), "21e1ede9448b0", "adb5396bd8dba46b6fc8c9a0b6228c20");
     }
 }
