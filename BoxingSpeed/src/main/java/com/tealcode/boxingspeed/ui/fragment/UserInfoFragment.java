@@ -33,6 +33,7 @@ import com.lljjcoder.city_20170724.bean.DistrictBean;
 import com.lljjcoder.city_20170724.bean.ProvinceBean;
 import com.tealcode.boxingspeed.R;
 import com.tealcode.boxingspeed.config.AppConfig;
+import com.tealcode.boxingspeed.handler.PhoneVerifyHandler;
 import com.tealcode.boxingspeed.helper.AppConstant;
 import com.tealcode.boxingspeed.helper.http.AsyncHttpReplyHandler;
 import com.tealcode.boxingspeed.helper.http.AsyncHttpWorker;
@@ -40,6 +41,7 @@ import com.tealcode.boxingspeed.manager.ProfilerManager;
 import com.tealcode.boxingspeed.message.UploadRequest;
 import com.tealcode.boxingspeed.protobuf.Server;
 import com.tealcode.boxingspeed.ui.activity.CropImageActivity;
+import com.tealcode.boxingspeed.ui.activity.PhoneVerifyPage;
 import com.tealcode.boxingspeed.ui.widget.BaseImageView;
 import com.tealcode.boxingspeed.utility.ImageUtil;
 
@@ -49,7 +51,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.IdentifyNumPage;
+import cn.smssdk.gui.RegisterPage;
 
 
 /**
@@ -75,7 +80,7 @@ public class UserInfoFragment extends BaseFragment {
     private TextView mUsernameText;
     private TextView mNicknameText;
     private TableRow mPhoneNumberRow;
-    private EditText mPhoneNumberText;
+    private TextView mPhoneNumberText;
     private TextView mBirthDateText;
     private TextView mLocationText;
     private EditText mSignatureText;
@@ -156,7 +161,7 @@ public class UserInfoFragment extends BaseFragment {
         mUsernameText = (TextView) mCurrView.findViewById(R.id.userinfo_username);
         mNicknameText = (TextView) mCurrView.findViewById(R.id.userinfo_nickname);
         mPhoneNumberRow = (TableRow) mCurrView.findViewById(R.id.userinfo_phone_row);
-        mPhoneNumberText = (EditText) mCurrView.findViewById(R.id.userinfo_phone_number);
+        mPhoneNumberText = (TextView) mCurrView.findViewById(R.id.userinfo_phone_number);
         mBirthDateText = (TextView) mCurrView.findViewById(R.id.userinfo_birth);
         mLocationText = (TextView) mCurrView.findViewById(R.id.userinfo_location);
         mSignatureText = (EditText) mCurrView.findViewById(R.id.userinfo_signature);
@@ -258,7 +263,29 @@ public class UserInfoFragment extends BaseFragment {
         mPhoneNumberText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RegisterPage
+
+                String currPhoneNum = profile.getPhoneNum();
+                if(currPhoneNum == null || currPhoneNum.isEmpty()) {
+                    Toast.makeText(getContext(), getString(R.string.cannot_change_binding_phone), Toast.LENGTH_SHORT).show();
+                } else {
+                    // 跳转到绑定手机界面进行绑定
+                    PhoneVerifyPage verifyPage = new PhoneVerifyPage();
+
+                    verifyPage.registerEventHandler(new PhoneVerifyHandler() {
+
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onFailure(String reason) {
+
+                        }
+                    });
+                    verifyPage.show(getContext());
+
+                }
             }
         });
 

@@ -68,6 +68,7 @@
     <string name="detail_nickname">昵称</string>
     <string name="detail_bind_phone">绑定手机</string>
     <string name="bind_one_phone">点击设置绑定手机</string>
+    <string name="cannot_change_binding_phone">手机已绑定，要更改绑定手机，请联系客服MM</string>
     <string name="detail_gender">性别</string>
     <string name="detail_birth">出生日期</string>
     <string name="edit_birth_date">点击修改出生日期</string>
