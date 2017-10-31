@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.mob.MobSDK;
+import com.mob.commons.SMSSDK;
 import com.tealcode.boxingspeed.helper.GateKeeper;
 import com.tealcode.boxingspeed.helper.http.HttpImageLoader;
 import com.tealcode.boxingspeed.helper.LocalStorage;

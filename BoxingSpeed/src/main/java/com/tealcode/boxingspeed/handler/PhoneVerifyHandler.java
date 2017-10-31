@@ -6,7 +6,7 @@ package com.tealcode.boxingspeed.handler;
 
 public abstract class PhoneVerifyHandler {
 
-    abstract public void onSuccess();
+    abstract public void onSuccess(String phoneNum);
 
     abstract public void onFailure(String reason);
 }

@@ -5,12 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.hardware.input.InputManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,11 +47,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.IdentifyNumPage;
-import cn.smssdk.gui.RegisterPage;
 
 
 /**
@@ -133,7 +125,9 @@ public class UserInfoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                // TODO: Check if user changed anything
+                if(hasChanged) {
+                    // TODO:  询问是否保存修改
+                }
 
                 // 返回到上个Activity
                 getActivity().finish();
@@ -265,17 +259,19 @@ public class UserInfoFragment extends BaseFragment {
             public void onClick(View v) {
 
                 String currPhoneNum = profile.getPhoneNum();
-                if(currPhoneNum == null || currPhoneNum.isEmpty()) {
+                if(currPhoneNum != null && !currPhoneNum.isEmpty()) {
                     Toast.makeText(getContext(), getString(R.string.cannot_change_binding_phone), Toast.LENGTH_SHORT).show();
                 } else {
                     // 跳转到绑定手机界面进行绑定
-                    PhoneVerifyPage verifyPage = new PhoneVerifyPage();
 
-                    verifyPage.registerEventHandler(new PhoneVerifyHandler() {
+                    PhoneVerifyPage.registerEventHandler(new PhoneVerifyHandler() {
 
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(String phoneNum) {
+                            Toast.makeText(getContext(), getString(R.string.bind_phone_success), Toast.LENGTH_SHORT).show();
 
+                            mPhoneNumberText.setText(phoneNum);
+                            setHasProfileChange(true);
                         }
 
                         @Override
@@ -283,8 +279,7 @@ public class UserInfoFragment extends BaseFragment {
 
                         }
                     });
-                    verifyPage.show(getContext());
-
+                    PhoneVerifyPage.show(getContext());
                 }
             }
         });

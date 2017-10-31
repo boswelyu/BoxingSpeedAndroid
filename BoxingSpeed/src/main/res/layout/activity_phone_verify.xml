@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <EditText
+            android:id="@+id/phone_number_text"
+            android:layout_width="240dp"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/message_text_bg"
+            android:hint="@string/prompt_phone_num"
+            android:inputType="text|textPhonetic"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:textColorHint="@color/login_hint_color"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/send_pass_code"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/phone_number_text"
+            android:layout_alignTop="@+id/phone_number_text"
+            android:layout_toRightOf="@+id/phone_number_text"
+            android:layout_alignParentRight="true"
+
+            android:background="@drawable/default_btn_bg"
+            android:text="@string/send_register_code"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp">
+
+        <EditText
+            android:id="@+id/pass_code_text"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/message_text_bg"
+            android:hint="@string/prompt_passcode"
+            android:imeActionId="@+id/login"
+            android:imeOptions="actionUnspecified"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:textColorHint="@color/login_hint_color"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/phone_bind_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/default_btn_bg"
+        android:text="@string/bind_phone_num"
+        android:textColor="@android:color/white"
+        android:textSize="21sp" />
+</LinearLayout>

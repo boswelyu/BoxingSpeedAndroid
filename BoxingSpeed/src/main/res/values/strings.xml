@@ -69,6 +69,7 @@
     <string name="detail_bind_phone">绑定手机</string>
     <string name="bind_one_phone">点击设置绑定手机</string>
     <string name="cannot_change_binding_phone">手机已绑定，要更改绑定手机，请联系客服MM</string>
+    <string name="bind_phone_success">绑定手机成功</string>
     <string name="detail_gender">性别</string>
     <string name="detail_birth">出生日期</string>
     <string name="edit_birth_date">点击修改出生日期</string>
@@ -81,6 +82,15 @@
     <string name="crop_head_image">头像裁剪</string>
     <string name="upload_avatar_success">上传头像成功</string>
     <string name="upload_avatar_failed">上传头像失败</string>
+
+    <!-- 绑定手机号码界面 -->
+    <string name="bind_phone_num">绑定</string>
+    <string name="invalid_phonenum">输入的手机号码无效</string>
+    <string name="resend_pass_code">重新发送</string>
+    <string name="invalid_passcode">输入的验证码无效</string>
+    <string name="passcode_sentout">验证码已发送</string>
+    <string name="passcode_verify_success">验证码验证成功</string>
+    <string name="passcode_verify_failed">验证失败</string>
 
 
     <!-- 网络对战界面 -->
