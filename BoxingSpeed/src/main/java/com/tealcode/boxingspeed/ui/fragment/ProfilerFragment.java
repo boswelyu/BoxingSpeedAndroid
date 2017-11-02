@@ -109,7 +109,7 @@ public class ProfilerFragment extends BaseFragment {
                 builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        LoginManager.getInstance().logout();
+                        LoginManager.getInstance().logout(getActivity());
                         getActivity().finish();
                         dialog.dismiss();
                     }

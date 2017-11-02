@@ -1,5 +1,7 @@
 package com.tealcode.boxingspeed.manager;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -9,7 +11,9 @@ import com.alibaba.fastjson.JSON;
 import com.tealcode.boxingspeed.config.AppConfig;
 import com.tealcode.boxingspeed.handler.IConnectHandler;
 import com.tealcode.boxingspeed.handler.IRegisterReplyHandler;
+import com.tealcode.boxingspeed.helper.AppConstant;
 import com.tealcode.boxingspeed.helper.GateKeeper;
+import com.tealcode.boxingspeed.helper.LocalStorage;
 import com.tealcode.boxingspeed.helper.http.AsyncHttpReplyHandler;
 import com.tealcode.boxingspeed.helper.http.AsyncHttpWorker;
 import com.tealcode.boxingspeed.message.LoginReply;
@@ -20,6 +24,7 @@ import com.tealcode.boxingspeed.handler.ILoginReplyHandler;
 import com.tealcode.boxingspeed.protobuf.Client;
 import com.tealcode.boxingspeed.protobuf.Common;
 import com.tealcode.boxingspeed.protobuf.Server;
+import com.tealcode.boxingspeed.ui.activity.LoginActivity;
 import com.tealcode.boxingspeed.utility.AES;
 import com.tealcode.boxingspeed.utility.MD5Util;
 
@@ -51,6 +56,9 @@ public class LoginManager extends Handler implements IConnectHandler {
     private AsyncTask<Void, Void, String> loginTask = null;
     private AsyncTask<Void, Void, Integer> registerTask = null;
     private String errorInfo = "";
+
+    private String mUsername;
+    private String mPassowrdMd5;
 
     private boolean loginFinished = false;
     private Common.RESULT  loginResult;
@@ -141,6 +149,10 @@ public class LoginManager extends Handler implements IConnectHandler {
                     if(mLoginReplyHander != null) {
                         mLoginReplyHander.onLoginSuccess();
                     }
+                    // 保存当前登录用的用户名和密码到本地存储
+                    LocalStorage.getInstance().setStringValue(AppConstant.KEY_SAVED_USERNAME, mUsername);
+                    LocalStorage.getInstance().setStringValue(AppConstant.KEY_SAVED_PASSWORD, mPassowrdMd5);
+
                 }else {
                     if(mLoginReplyHander != null) {
                         mLoginReplyHander.onLoginFailure(status);
@@ -211,9 +223,16 @@ public class LoginManager extends Handler implements IConnectHandler {
 
     }
 
-    public void logout()
+    public void logout(Context context)
     {
-        // TODO: 清理本地存储的用户名和密码，切换到登录界面，并且设置切换参数为不自动登录
+        // 清理本地存储的用户名和密码，
+        LocalStorage.getInstance().setStringValue(AppConstant.KEY_SAVED_USERNAME, "");
+        LocalStorage.getInstance().setStringValue(AppConstant.KEY_SAVED_PASSWORD, "");
+
+        // 切换到登录界面，并且设置切换参数为不自动登录
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra(AppConstant.KEY_AUTO_LOGIN, false);
+        context.startActivity(intent);
     }
 
     private String BuildLoginPostStr(String username, String password, boolean doHash)
@@ -221,10 +240,15 @@ public class LoginManager extends Handler implements IConnectHandler {
         LoginRequest request = new LoginRequest();
         request.setUsername(username);
 
+        this.mUsername = username;
+
         if(doHash) {
-            request.setPassword(MD5Util.encode(password));
+            String hashPw = MD5Util.encode(password);
+            request.setPassword(hashPw);
+            this.mPassowrdMd5 = hashPw;
         } else {
             request.setPassword(password);
+            this.mPassowrdMd5 = password;
         }
 
         String ret = JSON.toJSONString(request);

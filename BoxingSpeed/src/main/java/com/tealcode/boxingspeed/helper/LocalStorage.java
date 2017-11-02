@@ -43,7 +43,7 @@ public class LocalStorage {
             return;
         }
 
-        sharedPrefWriter.putString(key, value);
+        sharedPrefWriter.putString(key, value).commit();
     }
 
     public String getStringValue(String key, String defaultValue)
