@@ -87,36 +87,9 @@ public class LoginManager extends Handler implements IConnectHandler {
 
             @Override
             protected String doInBackground(Void... params) {
-                URL url = null;
                 String retstatus = "";
                 try {
-                    url = new URL(AppConfig.LoginUrl);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setConnectTimeout(2000);
-                    urlConnection.setReadTimeout(3000);
-                    urlConnection.setRequestMethod("POST");
-
-                    urlConnection.setDoInput(true);
-                    urlConnection.setDoOutput(true);
-
-                    PrintWriter printWriter = new PrintWriter(urlConnection.getOutputStream());
-                    printWriter.write(BuildLoginPostStr(username, password, dohash));
-                    printWriter.flush();
-
-                    // Read login response
-                    BufferedInputStream bis = new BufferedInputStream(urlConnection.getInputStream());
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-                    int len;
-                    byte[] buffer = new byte[1024];
-                    while((len = bis.read(buffer)) != -1)
-                    {
-                        bos.write(buffer, 0, len);
-                        bos.flush();
-                    }
-                    bos.close();
-
-                    String reply = bos.toString("utf-8");
+                    String reply = postToServer(AppConfig.LoginUrl, buildLoginPostStr(username, password, dohash));
                     retstatus = HandleLoginResult(reply);
 
                     if(retstatus.equals("OK")) {
@@ -163,64 +136,108 @@ public class LoginManager extends Handler implements IConnectHandler {
         }.execute();
     }
 
-    public void emailRegister(final String username, final String password)
+    public void register(final String username, final String password, final String regMethod)
     {
         if(registerTask != null) {
             registerTask.cancel(true);
         }
 
-        String postStr = BuildRegisterPostStr(username, password);
-        AsyncHttpWorker httpWorker = new AsyncHttpWorker();
-        httpWorker.post(AppConfig.RegisterUrl, postStr, new AsyncHttpReplyHandler() {
+        registerTask = new AsyncTask<Void, Void, Integer>() {
+
             @Override
-            public void onSuccess(String replyStr) {
-                LoginReply reply = JSON.parseObject(replyStr, LoginReply.class);
+            protected Integer doInBackground(Void... params) {
 
-                boolean hasError = false;
+                try {
+                    String replyStr = postToServer(AppConfig.RegisterUrl, buildRegisterPostStr(username, password, regMethod));
+                    LoginReply reply = JSON.parseObject(replyStr, LoginReply.class);
+                    boolean hasError = false;
 
-                if(reply != null && reply.getStatus() == 0) {
-                    SaveLoginReplyData(reply);
-                    if(AES.init(reply.getSessionKey()) != 0)
-                    {
-                        errorInfo = "Init AES Failed";
-                        hasError = true;
+                    if(reply != null && reply.getStatus() == 0) {
+                        SaveLoginReplyData(reply);
+
+                        if(AES.init(reply.getSessionKey()) != 0) {
+                            errorInfo = "Init AES failed";
+                            hasError = true;
+                        }
+
+                        if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) != 0) {
+                            errorInfo = "Internal Error: Init NetworkManager Failed";
+                            hasError = true;
+                        }
+
+                        if(hasError) {
+                            return reply.getStatus();
+                        } else {
+                            // wait until server login finished
+                            while(!loginFinished) {
+                                Thread.sleep(100);
+                            }
+
+                            // 检查登录游戏服务器的返回状态
+                            if(loginResult == Common.RESULT.RESULT_SUCCESS) {
+                                return 0;
+                            } else {
+                                errorInfo = loginResult.name();
+                                return -1;
+                            }
+                        }
+                    } else {
+                        errorInfo = "Internal Error: Reply empty!";
+                        return -1;
                     }
 
-                    if(initNetworkManager(reply.getServerIp(), reply.getServerPort()) != 0) {
-                        errorInfo = "Internal Error: Init NetworkManager Failed";
-                        hasError = true;
-                    }
-                } else {
-                    errorInfo = "Internal Error: Reply empty";
-                    hasError = true;
+                } catch (IOException e) {
+                    errorInfo = "Register Failed Because exception: " + e.toString();
+                    return -1;
+                } catch (InterruptedException e) {
+                    errorInfo = "Thread sleep interrupted";
+                    return -1;
                 }
+            }
 
-                if(!hasError) {
+            @Override
+            protected void onPostExecute(Integer result) {
+                if(result == 0) {
                     if(mRegisterReplyHandler != null) {
                         mRegisterReplyHandler.onRegisterSuccess();
                     }
-                }
-                else {
+                } else {
                     if(mRegisterReplyHandler != null) {
-                        mRegisterReplyHandler.onRegisterFailure(-1, errorInfo);
+                        mRegisterReplyHandler.onRegisterFailure(result, errorInfo);
                     }
                 }
             }
-
-            @Override
-            public void onFailure(int statusCode, String errorInfo) {
-                if(mRegisterReplyHandler != null) {
-                    mRegisterReplyHandler.onRegisterFailure(statusCode, errorInfo);
-                }
-            }
-        });
-
-
+        };
+        registerTask.execute();
     }
 
-    public void phoneRegister(String phonenum, String passcode)
-    {
+    private String postToServer(String urlStr, String postStr) throws IOException {
 
+            URL url = new URL(urlStr);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(5000);
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setRequestMethod("POST");
+
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+
+            PrintWriter printWriter = new PrintWriter(urlConnection.getOutputStream());
+            printWriter.write(postStr);
+            printWriter.flush();
+
+            // Read login response
+            BufferedInputStream bis = new BufferedInputStream(urlConnection.getInputStream());
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+            int len;
+            byte[] buffer = new byte[1024];
+            while ((len = bis.read(buffer)) != -1) {
+                bos.write(buffer, 0, len);
+                bos.flush();
+            }
+            bos.close();
+            return bos.toString("utf-8");
     }
 
     public void logout(Context context)
@@ -235,7 +252,7 @@ public class LoginManager extends Handler implements IConnectHandler {
         context.startActivity(intent);
     }
 
-    private String BuildLoginPostStr(String username, String password, boolean doHash)
+    private String buildLoginPostStr(String username, String password, boolean doHash)
     {
         LoginRequest request = new LoginRequest();
         request.setUsername(username);
@@ -257,11 +274,12 @@ public class LoginManager extends Handler implements IConnectHandler {
         return ret;
     }
 
-    private String BuildRegisterPostStr(String username, String password)
+    private String buildRegisterPostStr(String username, String password, String regMethod)
     {
         RegisterRequest request = new RegisterRequest();
         request.setUsername(username);
         request.setPassword(MD5Util.encode(password));
+        request.setRegMethod(regMethod);
 
         String ret = JSON.toJSONString(request);
         return ret;

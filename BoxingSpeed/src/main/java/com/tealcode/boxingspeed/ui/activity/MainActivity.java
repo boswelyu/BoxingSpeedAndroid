@@ -1,5 +1,6 @@
 package com.tealcode.boxingspeed.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 
 import com.tealcode.boxingspeed.R;
+import com.tealcode.boxingspeed.config.AppConfig;
+import com.tealcode.boxingspeed.helper.AppConstant;
+import com.tealcode.boxingspeed.manager.ActivityManager;
+import com.tealcode.boxingspeed.manager.ProfilerManager;
 import com.tealcode.boxingspeed.ui.fragment.ArenaFragment;
 import com.tealcode.boxingspeed.ui.fragment.BoxingFragment;
 import com.tealcode.boxingspeed.ui.fragment.FriendsFragment;
@@ -28,12 +33,11 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
         initTabButtons();
-
         initFragments();
-
         setFragmentIndicator(0);
+
+        checkToSetProfile();
     }
 
     private void initTabButtons()
@@ -97,5 +101,18 @@ public class MainActivity extends FragmentActivity {
         mTabButtons[4].setSelectedButton(false);
 
         mTabButtons[which].setSelectedButton(true);
+    }
+
+    private void checkToSetProfile()
+    {
+        Intent intent = getIntent();
+        if(intent == null) {
+            return;
+        }
+
+        boolean setProfile = intent.getBooleanExtra(AppConstant.KEY_SET_PROFILE, false);
+        if(setProfile) {
+            ActivityManager.startUserInfoActivity(this, ProfilerManager.getUserId());
+        }
     }
 }

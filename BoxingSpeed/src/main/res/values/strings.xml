@@ -87,6 +87,7 @@
     <string name="bind_phone_num">绑定</string>
     <string name="invalid_phonenum">输入的手机号码无效</string>
     <string name="resend_pass_code">重新发送</string>
+    <string name="empty_pass_code">请输入收到的短信验证码</string>
     <string name="invalid_passcode">输入的验证码无效</string>
     <string name="passcode_sentout">验证码已发送</string>
     <string name="passcode_verify_success">验证码验证成功</string>

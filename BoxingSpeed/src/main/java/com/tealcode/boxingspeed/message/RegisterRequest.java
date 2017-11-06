@@ -6,8 +6,20 @@ package com.tealcode.boxingspeed.message;
 
 public class RegisterRequest {
 
+    public static final String EMAIL_REG = "email";
+    public static final String PHONE_REG = "phone";
+
+    private String regMethod;
     private String username;
     private String password;
+
+    public String getRegMethod() {
+        return regMethod;
+    }
+
+    public void setRegMethod(String regMethod) {
+        this.regMethod = regMethod;
+    }
 
     public String getUsername() {
         return username;

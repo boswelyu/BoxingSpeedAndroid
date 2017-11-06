@@ -3,6 +3,8 @@ package com.tealcode.boxingspeed.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,6 +18,10 @@ import com.tealcode.boxingspeed.R;
 import com.tealcode.boxingspeed.handler.IRegisterReplyHandler;
 import com.tealcode.boxingspeed.helper.AppConstant;
 import com.tealcode.boxingspeed.manager.LoginManager;
+import com.tealcode.boxingspeed.message.RegisterRequest;
+import com.tealcode.boxingspeed.utility.TextUtil;
+
+import cn.smssdk.SMSSDK;
 
 public class RegisterActivity extends Activity implements IRegisterReplyHandler {
 
@@ -42,6 +48,11 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
     private boolean mIsEmailRegister = false;
     private boolean mIsPhoneRegister = false;
 
+    private Thread timerThread = null;
+    private final int CODE_TIMING = 1;     // 正在倒计时
+    private final int CODE_COOLDOWN = 2;   // 倒计时结束
+    private MessageHandler mMessageHandler = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +63,8 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
         LoginManager.getInstance().setRegisterHandler(this);
 
         initViewLayout();
+
+        initListeners();
 
         // 根据传入参数决定显示手机注册还是邮箱注册
         displayView();
@@ -99,6 +112,22 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
         mConfirmPasswordText = (EditText) findViewById(R.id.confirm_password);
         mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
 
+        mPhoneNumberText = (EditText) findViewById(R.id.phone_number_text);
+        mSendPassCodeButton = (Button) findViewById(R.id.send_register_code);
+        mPhonePassCodeText = (EditText) findViewById(R.id.phone_pass_code_text);
+        mPhoneRegisterButton = (Button) findViewById(R.id.phone_register_button);
+
+    }
+
+    private void initListeners()
+    {
+        mSendPassCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendPassCode();
+            }
+        });
+
         mEmailRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,10 +135,6 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
             }
         });
 
-        mPhoneNumberText = (EditText) findViewById(R.id.phone_number_text);
-        mSendPassCodeButton = (Button) findViewById(R.id.send_register_code);
-        mPhonePassCodeText = (EditText) findViewById(R.id.phone_pass_code_text);
-        mPhoneRegisterButton = (Button) findViewById(R.id.phone_register_button);
         mPhoneRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,6 +203,10 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
 
         mIsEmailRegister = false;
         mIsPhoneRegister = true;
+
+        if(mMessageHandler == null) {
+            mMessageHandler = new MessageHandler();
+        }
     }
 
     private void showProgress(final boolean show) {
@@ -186,6 +215,45 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
         } else {
             mStatusPage.setVisibility(View.GONE);
         }
+    }
+
+    private void sendPassCode()
+    {
+        String phonenum = mPhoneNumberText.getText().toString();
+
+        if(phonenum.isEmpty() || !TextUtil.isValidPhoneNumber(phonenum)) {
+            Toast.makeText(this, getString(R.string.invalid_phonenum), Toast.LENGTH_LONG).show();
+            mPhoneNumberText.requestFocus();
+            return;
+        }
+
+        SMSSDK.getVerificationCode("86", phonenum);
+
+        // 60秒内不允许再次发送验证码
+        mSendPassCodeButton.setClickable(false);
+        if(timerThread != null) {
+            timerThread.interrupt();
+        }
+
+        timerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 60; i > 0; i--) {
+                    Message msg = new Message();
+                    msg.arg1 = i;
+                    msg.what = CODE_TIMING;
+                    mMessageHandler.sendMessage(msg);
+                    try {
+                        Thread.sleep(1000);
+                    }catch (Exception e) {
+                        Log.e(TAG, "Timer thread interrupted by exception: " + e.toString());
+                    }
+                }
+
+                mMessageHandler.sendEmptyMessage(CODE_COOLDOWN);
+            }
+        });
+        timerThread.start();
     }
 
     private void attemptEmailRegister()
@@ -234,7 +302,7 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
         showProgress(true);
 
         regUserName = regUserName.trim();
-        LoginManager.getInstance().emailRegister(regUserName, regPassword);
+        LoginManager.getInstance().register(regUserName, regPassword, RegisterRequest.EMAIL_REG);
     }
 
     private void attemptPhoneRegister()
@@ -245,13 +313,34 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
             return;
         }
 
+        String phoneNumStr = mPhoneNumberText.getText().toString().trim();
+        String passCodeStr = mPhonePassCodeText.getText().toString().trim();
+        if(TextUtils.isEmpty(phoneNumStr)) {
+            Toast.makeText(this, getString(R.string.invalid_phonenum), Toast.LENGTH_SHORT).show();
+            mPhoneNumberText.requestFocus();
+            return;
+        }
+
+        if(TextUtils.isEmpty(passCodeStr)) {
+            Toast.makeText(this, getString(R.string.empty_pass_code), Toast.LENGTH_SHORT).show();
+            mPasswordText.requestFocus();
+            return;
+        }
+
+        showProgress(true);
+
+        LoginManager.getInstance().register(phoneNumStr, passCodeStr, RegisterRequest.PHONE_REG);
     }
 
 
     // Implement IRegisterReplyHandler callback functions
     @Override
     public void onRegisterSuccess() {
+
+        showProgress(false);
+
         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+        intent.putExtra(AppConstant.KEY_SET_PROFILE, true);
         startActivity(intent);
 
         RegisterActivity.this.finish();
@@ -269,6 +358,23 @@ public class RegisterActivity extends Activity implements IRegisterReplyHandler 
             // Duplex Username
             mUsernameText.requestFocus();
             return;
+        }
+    }
+
+    // 处理倒计时消息的内部类
+    private class MessageHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what) {
+                case CODE_TIMING:
+                    int rt = msg.arg1;
+                    mSendPassCodeButton.setText(getString(R.string.resend_pass_code) + "(" + rt + "s)");
+                    break;
+                case CODE_COOLDOWN:
+                    mSendPassCodeButton.setText(getString(R.string.send_register_code));
+                    mSendPassCodeButton.setClickable(true);
+                    break;
+            }
         }
     }
 
